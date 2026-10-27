@@ -78,10 +78,14 @@ document.querySelector('.hero').addEventListener('mouseleave', function () {
 document.querySelectorAll('.search-tab').forEach(function (tab) {
   tab.addEventListener('click', function () {
     document.querySelectorAll('.search-tab').forEach(function (item) { item.classList.toggle('active', item === tab); });
-    const select = document.querySelector('#search-destination');
-    const kinds = {safaris:'Maasai Mara',beach:'Diani Beach',adventure:'Amboseli',family:'Naivasha'};
-    if (kinds[tab.dataset.kind]) select.value = kinds[tab.dataset.kind];
+    const feedback = document.querySelector('#search-feedback');
+    const kindName = tab.textContent.trim().toLowerCase();
+    if (feedback) feedback.textContent = 'Trip type selected: ' + kindName + '. Choose your destination and travel date below.';
+    document.querySelector('#search-form').dataset.kind = tab.dataset.kind;
   });
+});
+document.querySelector('.header-search')?.addEventListener('click', function () {
+  document.querySelector('.travelix-search')?.scrollIntoView({behavior:'smooth', block:'center'});
 });
 document.querySelector('#search-form').addEventListener('submit', function (event) {
   event.preventDefault();
