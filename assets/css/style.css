@@ -316,3 +316,10 @@ html{scroll-padding-top:112px}
 .service-highlight-grid h3{font:800 19px Montserrat,sans-serif;color:var(--navy);margin:14px 0 10px}
 .service-highlight-grid p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}
 @media(max-width:700px){.service-highlight-grid{grid-template-columns:1fr}.partner-section{padding:48px 18px}.partner-logo-link{margin-top:20px}}
+
+
+/* Fixed WhatsApp contact shortcut, visible while scrolling */
+.floating-whatsapp{position:fixed;right:28px;bottom:26px;z-index:9999;width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#20cf68;color:#fff;box-shadow:0 7px 22px rgba(0,0,0,.24);transition:transform .2s ease,box-shadow .2s ease}
+.floating-whatsapp:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 10px 26px rgba(0,0,0,.28)}
+.floating-whatsapp svg{width:39px;height:39px;fill:currentColor}
+@media(max-width:600px){.floating-whatsapp{right:16px;bottom:18px;width:58px;height:58px}.floating-whatsapp svg{width:34px;height:34px}}
