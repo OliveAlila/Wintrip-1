@@ -84,3 +84,28 @@ renderDestinationDetail();
  update();
  button.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 })();
+
+
+// Improve touch-device menu behavior: outside tap and Escape close the mobile menu.
+(()=>{
+ const toggle=document.querySelector('.nav-toggle');
+ const nav=document.querySelector('.nav');
+ if(!toggle||!nav)return;
+ const close=()=>{nav.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.textContent='☰';};
+ document.addEventListener('click',event=>{
+  if(nav.classList.contains('open')&&!nav.contains(event.target)&&!toggle.contains(event.target))close();
+ });
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav.classList.contains('open')){close();toggle.focus();}});
+ nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',close));
+})();
+
+// Recheck floating controls after mobile browser viewport/scroll changes.
+(()=>{
+ const button=document.querySelector('.back-to-top');
+ if(!button)return;
+ const update=()=>button.classList.toggle('is-visible',(window.scrollY||document.documentElement.scrollTop)>260);
+ window.addEventListener('scroll',update,{passive:true});
+ window.addEventListener('resize',update,{passive:true});
+ window.addEventListener('pageshow',update);
+ update();
+})();
