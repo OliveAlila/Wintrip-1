@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=8">
+  <link rel="stylesheet" href="assets/css/style.css?v=9">
 </head>
 <body>
   <div class="topbar"><div class="topbar-inner">
@@ -25,8 +25,16 @@
     <a class="logo" href="#home" aria-label="Wintrip Safaris home"><img src="https://www.wintripsafaris.com/assets/images/logo.gif" alt="Wintrip Safaris"></a>
     <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
     <nav class="nav" aria-label="Main navigation"><a class="active" href="#home">Home</a><a href="#about">About</a><a href="#why-us">Why</a><a href="#destinations">Popular Destinations</a><a href="#contact">Book Online</a><a href="#testimonials">Testimonials</a><a href="#contact">Contact</a></nav>
-<button class="header-search" aria-label="Jump to trip search">⌕</button>
+<button class="header-search" type="button" aria-label="Open website search" aria-expanded="false" aria-controls="site-search-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"></circle><path d="m16 16 5 5"></path></svg></button>
   </div></header>
+  <div class="site-search-panel" id="site-search-panel" hidden>
+  <form class="site-search-form" id="site-search-form" role="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"></circle><path d="m16 16 5 5"></path></svg>
+    <input id="site-search-input" type="search" placeholder="Search destinations, tours and more..." autocomplete="off" aria-label="Search this website">
+    <button type="button" class="site-search-close" aria-label="Close search">×</button>
+  </form>
+  <div class="site-search-results" id="site-search-results" aria-live="polite"><p>Try searching for a destination, safari or travel service.</p></div>
+</div>
   <main>
     <section class="hero travelix-hero" aria-label="Featured travel destinations">
       <div class="hero-slides">
