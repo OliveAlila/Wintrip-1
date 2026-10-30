@@ -50,15 +50,15 @@ renderDestinationDetail();
     if(el.closest('#site-search-panel'))return;
     const heading=el.querySelector('h1,h2,h3,h4');
     const title=(heading?.textContent||el.getAttribute('data-destination')||el.id.replace(/[-_]/g,' ')).trim();
-    const body=(el.innerText||el.textContent||'').replace(/\\s+/g,' ').trim();
-    if(body.length>15)items.push({title,body,id:el.id,destination:el.getAttribute('data-destination')});
+    const body=(el.innerText||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(body.length>15)items.push({title,body,id:el.id||'destinations',destination:el.getAttribute('data-destination')});
    });
    return items;
   };
   const runSearch=()=>{
    const query=input.value.trim().toLowerCase();
    if(!query){results.innerHTML='<p>Try searching for a destination, safari or travel service.</p>';return;}
-   const words=query.split(/\\s+/).filter(Boolean);
+   const words=query.split(/\s+/).filter(Boolean);
    const matches=getSearchItems().map(item=>({...item,score:words.reduce((n,w)=>n+((item.title+' '+item.body).toLowerCase().includes(w)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
    if(!matches.length){results.innerHTML='<p>No matches found. Try another destination or keyword.</p>';return;}
    const prefix=location.pathname.endsWith('destination.html')?'index.html':'';
