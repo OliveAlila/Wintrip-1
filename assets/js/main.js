@@ -58,7 +58,7 @@ renderDestinationDetail();
   document.querySelectorAll('main section[id],main article[id],main .destination-card,main .tour-card,main .destination-detail-main .detail-panel').forEach(el=>{
    const heading=el.querySelector('h1,h2,h3,h4');
    const title=(heading?.textContent||el.id?.replace(/[-_]/g,' ')||'').trim();
-   const body=(el.innerText||el.textContent||'').replace(/\\s+/g,' ').trim();
+   const body=(el.innerText||el.textContent||'').replace(/\s+/g,' ').trim();
    const link=el.matches('.destination-card,.tour-card')?el.querySelector('a[href]'):null;
    const id=el.id||el.closest('section[id]')?.id||'destinations';
    const href=link?.getAttribute('href')||(location.pathname.endsWith('destination.html')?'index.html#destinations':'#'+id);
@@ -69,7 +69,7 @@ renderDestinationDetail();
  const runSearch=()=>{
   const query=input.value.trim().toLowerCase();
   if(!query){results.innerHTML='<p>Try a destination, safari or travel service.</p>';return;}
-  const words=query.split(/\\s+/).filter(Boolean);
+  const words=query.split(/\s+/).filter(Boolean);
   const matches=getItems().map(item=>({...item,score:words.reduce((score,word)=>score+((item.title+' '+item.body).toLowerCase().includes(word)?1:0),0)})).filter(item=>item.score>0).sort((x,y)=>y.score-x.score).slice(0,10);
   if(!matches.length){results.innerHTML='<p>No matches found. Try another destination or keyword.</p>';return;}
   results.innerHTML='<ul>'+matches.map(item=>'<li><a href="'+escapeText(item.href)+'"><strong>'+escapeText(item.title)+'</strong><small>'+escapeText(item.body.slice(0,105))+(item.body.length>105?'…':'')+'</small></a></li>').join('')+'</ul>';
