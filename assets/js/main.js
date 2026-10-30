@@ -20,7 +20,7 @@ renderDestinations();renderTours();
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderDestinations(b.dataset.region);}));
 const toggle=document.querySelector('.nav-toggle'),nav=document.querySelector('.nav');toggle?.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'×':'☰';});nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle?.setAttribute('aria-expanded','false');if(toggle)toggle.textContent='☰';}));
 const slides=[...document.querySelectorAll('.hero-slide')],dots=[...document.querySelectorAll('.hero-dots button')];let current=0;function showSlide(i){if(!slides.length)return;current=(i+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('active',n===current));dots.forEach((d,n)=>d.classList.toggle('active',n===current));}document.querySelector('.hero-arrow.prev')?.addEventListener('click',()=>showSlide(current-1));document.querySelector('.hero-arrow.next')?.addEventListener('click',()=>showSlide(current+1));dots.forEach((d,i)=>d.addEventListener('click',()=>showSlide(i)));let timer=slides.length?setInterval(()=>showSlide(current+1),6500):null;document.querySelector('.hero')?.addEventListener('mouseenter',()=>clearInterval(timer));document.querySelector('.hero')?.addEventListener('mouseleave',()=>{if(slides.length){clearInterval(timer);timer=setInterval(()=>showSlide(current+1),6500);}});
-document.querySelectorAll('.search-tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.search-tab').forEach(x=>x.classList.toggle('active',x===tab));const f=document.querySelector('#search-feedback');if(f)f.textContent='Trip type selected: '+tab.textContent.trim().toLowerCase()+'. Choose your destination and travel date below.';}));document.querySelector('.header-search')?.addEventListener('click',()=>document.querySelector('.travelix-search')?.scrollIntoView({behavior:'smooth',block:'center'}));
+document.querySelectorAll('.search-tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.search-tab').forEach(x=>x.classList.toggle('active',x===tab));const f=document.querySelector('#search-feedback');if(f)f.textContent='Trip type selected: '+tab.textContent.trim().toLowerCase()+'. Choose your destination and travel date below.';}));
 document.querySelector('#search-form')?.addEventListener('submit',e=>{e.preventDefault();const value=document.querySelector('#search-destination').value;if(value)location.href='destination.html?destination='+encodeURIComponent(value);else document.querySelector('#search-feedback').textContent='Choose a destination or send us an enquiry and we will help you decide.';});
 document.addEventListener('click',e=>{const a=e.target.closest('[data-destination]');if(!a)return;const f=document.querySelector('#contact-form [name="destination"]');if(f)f.value=[...f.options].some(o=>o.value===a.dataset.destination)?a.dataset.destination:'Not sure yet';});
 function sendEmailFallback(p){const body=['Name: '+p.name,'Email: '+p.email,'Destination: '+(p.destination||'Not decided'),'Travel date: '+(p.travel_date||'Flexible'),'','Trip details:',p.message].join('\n');location.href='mailto:wintripsafarishelp@gmail.com?subject='+encodeURIComponent('Wintrip travel enquiry — '+(p.destination||'Trip planning'))+'&body='+encodeURIComponent(body);}
@@ -34,3 +34,53 @@ renderDestinationDetail();
 
 // Show the floating back-to-top control only after the visitor scrolls down.
 (()=>{const button=document.querySelector('.back-to-top');if(!button)return;const update=()=>button.classList.toggle('is-visible',window.scrollY>320);window.addEventListener('scroll',update,{passive:true});update();button.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));})();
+
+
+// Expandable site search: searches visible page sections and links to matching content.
+(()=>{
+ const trigger=document.querySelector('.header-search');
+ const panel=document.querySelector('#site-search-panel');
+ const input=document.querySelector('#site-search-input');
+ const results=document.querySelector('#site-search-results');
+ if(trigger&&panel&&input&&results){
+  const close=()=>{panel.hidden=true;trigger.setAttribute('aria-expanded','false');};
+  const getSearchItems=()=>{
+   const items=[];
+   document.querySelectorAll('main section[id], main article[id], main [data-destination]').forEach((el)=>{
+    if(el.closest('#site-search-panel'))return;
+    const heading=el.querySelector('h1,h2,h3,h4');
+    const title=(heading?.textContent||el.getAttribute('data-destination')||el.id.replace(/[-_]/g,' ')).trim();
+    const body=(el.innerText||el.textContent||'').replace(/\\s+/g,' ').trim();
+    if(body.length>15)items.push({title,body,id:el.id,destination:el.getAttribute('data-destination')});
+   });
+   return items;
+  };
+  const runSearch=()=>{
+   const query=input.value.trim().toLowerCase();
+   if(!query){results.innerHTML='<p>Try searching for a destination, safari or travel service.</p>';return;}
+   const words=query.split(/\\s+/).filter(Boolean);
+   const matches=getSearchItems().map(item=>({...item,score:words.reduce((n,w)=>n+((item.title+' '+item.body).toLowerCase().includes(w)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
+   if(!matches.length){results.innerHTML='<p>No matches found. Try another destination or keyword.</p>';return;}
+   const prefix=location.pathname.endsWith('destination.html')?'index.html':'';
+   results.innerHTML='<ul>'+matches.map(item=>'<li><a href="'+prefix+'#'+encodeURIComponent(item.id)+'"><strong>'+escapeSearchText(item.title)+'</strong><small>'+escapeSearchText(item.body.slice(0,115))+(item.body.length>115?'…':'')+'</small></a></li>').join('')+'</ul>';
+   results.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+  };
+  const escapeSearchText=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  trigger.addEventListener('click',()=>{panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){input.focus();runSearch();}});
+  input.addEventListener('input',runSearch);
+  panel.querySelector('.site-search-close')?.addEventListener('click',close);
+  panel.querySelector('form')?.addEventListener('submit',e=>{e.preventDefault();runSearch();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){close();trigger.focus();}});
+  document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!trigger.contains(e.target))close();});
+ }
+})();
+
+// Back-to-top control appears after scrolling and sits just above the WhatsApp shortcut.
+(()=>{
+ const button=document.querySelector('.back-to-top');
+ if(!button)return;
+ const update=()=>button.classList.toggle('is-visible',window.scrollY>260);
+ window.addEventListener('scroll',update,{passive:true});
+ update();
+ button.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+})();
