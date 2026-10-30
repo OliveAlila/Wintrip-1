@@ -212,3 +212,13 @@ html{scroll-padding-top:90px}
   .section{padding-left:17px;padding-right:17px}
   .destination-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* Wintrip-1 production header refinements and official white logo treatment */
+.header{height:142px;background:linear-gradient(180deg,rgba(54,13,73,.70),rgba(54,13,73,.56));}
+.header-inner{height:92px;}
+.logo img{filter:brightness(0) invert(1) drop-shadow(0 1px 2px #160b24a0);}
+.nav{gap:clamp(18px,2.5vw,44px);font-size:13px;}
+.nav a{padding:8px 0;}
+@media(max-width:820px){.header{height:112px;}.header-inner{height:78px;}.nav{top:77px;}}
+@media(max-width:520px){.header{height:100px;}.header-inner{height:73px;}.nav{top:72px;}}
