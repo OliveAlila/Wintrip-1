@@ -237,3 +237,12 @@ html{scroll-padding-top:90px}
 .footer-logo img{background:transparent!important;padding:0!important;filter:brightness(0) invert(1) drop-shadow(0 1px 2px #0008)!important}
 @media(max-width:820px){.newsletter-section{padding:48px 24px;grid-template-columns:1fr;gap:22px}}
 @media(max-width:520px){.newsletter-section{padding:42px 18px}.newsletter-form{grid-template-columns:1fr}.newsletter-form button{min-height:42px}}
+
+
+/* White Wintrip wordmark: invert the dark artwork and screen out its white canvas. */
+.logo img,
+.footer-logo img {
+  background: transparent !important;
+  filter: grayscale(1) invert(1) contrast(1.1) !important;
+  mix-blend-mode: screen;
+}
