@@ -266,9 +266,9 @@ html{scroll-padding-top:112px}
 .logo img{
   width:174px!important;height:76px!important;object-fit:contain!important;
   background:transparent!important;padding:0!important;border:0!important;border-radius:0!important;
-  filter:none!important;mix-blend-mode:screen!important;
+  filter:none!important;mix-blend-mode:lighten!important;
 }
-.footer-logo img{filter:none!important;mix-blend-mode:screen!important;background:transparent!important;padding:0!important}
+.footer-logo img{filter:none!important;mix-blend-mode:lighten!important;background:transparent!important;padding:0!important}
 .nav{gap:clamp(18px,2.5vw,42px)!important;font-size:13px!important}
 .nav a{padding:8px 0!important}
 .topbar{z-index:101!important}
