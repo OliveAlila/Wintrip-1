@@ -11,9 +11,9 @@ $email = trim((string)($input['email'] ?? ''));
 $destination = trim((string)($input['destination'] ?? ''));
 $travelDate = trim((string)($input['travel_date'] ?? $input['date'] ?? ''));
 $message = trim((string)($input['message'] ?? ''));
-if ($name === '' || mb_strlen($name) > 160) { http_response_code(422); echo json_encode(['error' => 'Please enter your name.']); exit; }
+if ($name === '' || strlen($name) > 160) { http_response_code(422); echo json_encode(['error' => 'Please enter your name.']); exit; }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190) { http_response_code(422); echo json_encode(['error' => 'Please enter a valid email address.']); exit; }
-if ($message === '' || mb_strlen($message) > 10000) { http_response_code(422); echo json_encode(['error' => 'Please tell us a little about your trip.']); exit; }
+if ($message === '' || strlen($message) > 10000) { http_response_code(422); echo json_encode(['error' => 'Please tell us a little about your trip.']); exit; }
 $dateValue = null;
 if ($travelDate !== '') {
     $date = DateTime::createFromFormat('Y-m-d', $travelDate);
