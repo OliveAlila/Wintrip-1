@@ -1,127 +1,32 @@
-const destinations = [
-  {name:'Maasai Mara',country:'KENYA',region:'Kenya',tag:'Wildlife & the Great Migration',days:'3–5 days',image:'photo-1516426122078-c23e76319801'},
-  {name:'Amboseli',country:'KENYA',region:'Kenya',tag:'Elephants beneath Kilimanjaro',days:'2–4 days',image:'photo-1516026672322-bc52d61a55d5'},
-  {name:'Diani Beach',country:'KENYA',region:'Coast',tag:'White sand & turquoise water',days:'3–6 days',image:'photo-1500375592092-40eb2168fd21'},
-  {name:'Lamu',country:'KENYA',region:'Coast',tag:'Swahili heritage & island life',days:'2–4 days',image:'photo-1518509562904-e7ef99cdcc86'},
-  {name:'Zanzibar',country:'TANZANIA',region:'Coast',tag:'Spice island & Indian Ocean shores',days:'4–7 days',image:'photo-1544551763-46a013bb70d5'},
-  {name:'Cape Town',country:'SOUTH AFRICA',region:'Africa',tag:'Mountain, city & coast',days:'4–7 days',image:'photo-1580060839134-75a5edca2e99'},
-  {name:'Dubai',country:'UAE',region:'Beyond',tag:'Desert adventures & skyline',days:'3–5 days',image:'photo-1512453979798-5ea266f8880c'},
-  {name:'Naivasha',country:'KENYA',region:'Kenya',tag:'Lake escapes & Rift Valley views',days:'2–3 days',image:'photo-1470770841072-f978cf4d019e'}
+const builtInDestinations=[
+{name:'Maasai Mara',country:'KENYA',region:'Kenya',tag:'Wildlife & the Great Migration',days:'3–5 days',image:'photo-1516426122078-c23e76319801',description:'Explore the rolling grasslands of the Maasai Mara, one of Kenya’s most celebrated wildlife destinations. The reserve is known for big cats, large elephant herds and the seasonal Great Migration.',best_time:'July to October for the migration; wildlife viewing is rewarding throughout the year.',visitor_guidance:'Pack neutral-coloured clothing, a hat, sunscreen and binoculars. Follow your guide’s instructions and keep a respectful distance from wildlife.',highlights:['Game drives across the reserve','Big-cat and elephant sightings','Seasonal Great Migration']},
+{name:'Amboseli',country:'KENYA',region:'Kenya',tag:'Elephants beneath Kilimanjaro',days:'2–4 days',image:'photo-1516026672322-bc52d61a55d5',description:'Amboseli is famed for its large elephant herds and striking views of Mount Kilimanjaro. Its open plains, swamps and acacia woodland make for varied landscapes and memorable game viewing.',best_time:'June to October and January to February are generally drier periods.',visitor_guidance:'Bring sun protection, a camera and binoculars. Kilimanjaro is often clearest early in the morning. Weather and mountain visibility vary.',highlights:['Elephant herds','Views of Mount Kilimanjaro','Birdwatching around the swamps']},
+{name:'Diani Beach',country:'KENYA',region:'Coast',tag:'White sand & turquoise water',days:'3–6 days',image:'photo-1500375592092-40eb2168fd21',description:'Diani Beach is a beautiful stretch of Kenya’s south coast, known for its white sand, warm Indian Ocean waters and relaxed coastal atmosphere.',best_time:'January to March and July to October are popular drier periods.',visitor_guidance:'Bring sun protection and light clothing. Check local sea conditions before swimming or arranging water activities. Respect marine life.',highlights:['White-sand beaches','Snorkelling and diving trips','Kitesurfing and water sports']},
+{name:'Lamu',country:'KENYA',region:'Coast',tag:'Swahili heritage & island life',days:'2–4 days',image:'photo-1518509562904-e7ef99cdcc86',description:'Lamu offers a slower pace shaped by Swahili culture, historic architecture and the Indian Ocean. Explore the old town, waterfront and nearby beaches.',best_time:'Generally drier from December to March and July to October.',visitor_guidance:'Dress respectfully when visiting historic and religious areas. Comfortable walking shoes are useful on the narrow streets. Confirm boat transfers before travel.',highlights:['Lamu Old Town heritage','Dhow sailing experiences','Shela Beach']},
+{name:'Zanzibar',country:'TANZANIA',region:'Coast',tag:'Spice island & Indian Ocean shores',days:'4–7 days',image:'photo-1544551763-46a013bb70d5',description:'Zanzibar combines palm-fringed beaches with the history and character of Stone Town. Visitors can enjoy spice tours, dhow cruises and Indian Ocean experiences.',best_time:'June to October and December to February are popular drier seasons.',visitor_guidance:'Check current entry and visa requirements before departure. Pack light clothing and modest attire for cultural and religious sites.',highlights:['Stone Town','Spice farm visits','Beach stays and dhow cruises']},
+{name:'Cape Town',country:'SOUTH AFRICA',region:'Africa',tag:'Mountain, city & coast',days:'4–7 days',image:'photo-1580060839134-75a5edca2e99',description:'Cape Town brings together dramatic mountain scenery, beautiful coastlines, food, art and history. It is an excellent starting point for exploring the Cape Peninsula and nearby winelands.',best_time:'November to March for warmer, drier summer weather.',visitor_guidance:'Book popular attractions ahead. Weather on Table Mountain can change quickly, so check conditions before hiking or taking the cableway.',highlights:['Table Mountain','Cape Peninsula drives','V&A Waterfront']},
+{name:'Dubai',country:'UAE',region:'Beyond',tag:'Desert adventures & skyline',days:'3–5 days',image:'photo-1512453979798-5ea266f8880c',description:'Dubai pairs a striking modern skyline with traditional markets, desert landscapes and a wide range of dining and shopping experiences.',best_time:'November to March for milder outdoor conditions.',visitor_guidance:'Check visa and entry requirements for your passport before booking. Dress respectfully in public and religious spaces. Use licensed operators for desert activities.',highlights:['Burj Khalifa and Downtown Dubai','Desert safari experiences','Traditional souks']},
+{name:'Naivasha',country:'KENYA',region:'Kenya',tag:'Lake escapes & Rift Valley views',days:'2–3 days',image:'photo-1470770841072-f978cf4d019e',description:'Lake Naivasha is a refreshing Rift Valley escape with lakeside stays, birdlife and nearby nature experiences. It is well suited to a short break from Nairobi.',best_time:'January to March and June to October are often drier, though conditions vary.',visitor_guidance:'Use licensed guides for boat trips and wildlife activities. Keep a safe distance from hippos and follow guide instructions near the water.',highlights:['Boat trips on Lake Naivasha','Birdwatching','Crescent Island guided walks']}
 ];
-const tours = [
-  {name:'The Great Mara Escape',type:'SAFARI & WILDLIFE',duration:'4 days · 3 nights',description:'Look out for lions, elephants and sweeping savannah views on a classic Kenyan safari.',image:'photo-1516426122078-c23e76319801'},
-  {name:'Diani Slow Days',type:'BEACH & RELAXATION',duration:'5 days · 4 nights',description:'Settle into coastal rhythms with beach time, ocean breezes and optional water adventures.',image:'photo-1500375592092-40eb2168fd21'},
-  {name:'Amboseli & the Mountain',type:'WILDLIFE & SCENERY',duration:'3 days · 2 nights',description:'Experience wide-open landscapes and memorable elephant sightings beneath Kilimanjaro.',image:'photo-1516026672322-bc52d61a55d5'}
-];
-function imageUrl(id, width) {
-  return 'https://images.unsplash.com/' + id + '?auto=format&fit=crop&w=' + (width || 850) + '&q=83';
-}
-const destinationGrid = document.querySelector('#destination-grid');
-const tourGrid = document.querySelector('#tour-grid');
-
-function renderDestinations(region) {
-  const selectedRegion = region || 'All';
-  const shown = destinations.filter(function (destination) {
-    return selectedRegion === 'All' || destination.region === selectedRegion;
-  });
-  destinationGrid.innerHTML = shown.map(function (destination) {
-    return '<article class="destination-card"><a href="#contact" class="destination-image" data-destination="' + destination.name + '"><img src="' + imageUrl(destination.image, 800) + '" alt="' + destination.name + '" loading="lazy"><span class="destination-country">' + destination.country + '</span></a><div class="destination-card-body"><h3>' + destination.name + '</h3><p>' + destination.tag + '</p><div class="destination-card-foot"><span>✦ ' + destination.days + '</span><a href="#contact" data-destination="' + destination.name + '">DISCOVER ↗</a></div></div></article>';
-  }).join('');
-}
-function renderTours() {
-  tourGrid.innerHTML = tours.map(function (tour) {
-    return '<article class="tour-card"><div class="tour-image"><img src="' + imageUrl(tour.image, 900) + '" alt="' + tour.name + '" loading="lazy"><span class="tour-type">' + tour.type + '</span></div><div class="tour-body"><h3>' + tour.name + '</h3><p>' + tour.description + '</p><div class="tour-foot"><span>◷ ' + tour.duration + '</span><a href="#contact" data-destination="' + tour.name + '">ENQUIRE ↗</a></div></div></article>';
-  }).join('');
-}
-renderDestinations();
-renderTours();
-
-document.querySelectorAll('.filter').forEach(function (button) {
-  button.addEventListener('click', function () {
-    document.querySelectorAll('.filter').forEach(function (item) { item.classList.toggle('active', item === button); });
-    renderDestinations(button.dataset.region);
-  });
-});
-const navToggle = document.querySelector('.nav-toggle');
-const nav = document.querySelector('.nav');
-navToggle.addEventListener('click', function () {
-  const open = nav.classList.toggle('open');
-  navToggle.setAttribute('aria-expanded', String(open));
-  navToggle.textContent = open ? '×' : '☰';
-});
-nav.querySelectorAll('a').forEach(function (link) {
-  link.addEventListener('click', function () {
-    nav.classList.remove('open');
-    navToggle.setAttribute('aria-expanded', 'false');
-    navToggle.textContent = '☰';
-  });
-});
-
-const slides = Array.from(document.querySelectorAll('.hero-slide'));
-const dots = Array.from(document.querySelectorAll('.hero-dots button'));
-let slideIndex = 0;
-function goSlide(index) {
-  slideIndex = (index + slides.length) % slides.length;
-  slides.forEach(function (slide, i) { slide.classList.toggle('active', i === slideIndex); });
-  dots.forEach(function (dot, i) { dot.classList.toggle('active', i === slideIndex); });
-}
-document.querySelector('.hero-arrow.prev').addEventListener('click', function () { goSlide(slideIndex - 1); });
-document.querySelector('.hero-arrow.next').addEventListener('click', function () { goSlide(slideIndex + 1); });
-dots.forEach(function (dot, i) { dot.addEventListener('click', function () { goSlide(i); }); });
-let carouselTimer = setInterval(function () { goSlide(slideIndex + 1); }, 6500);
-document.querySelector('.hero').addEventListener('mouseenter', function () { clearInterval(carouselTimer); });
-document.querySelector('.hero').addEventListener('mouseleave', function () {
-  clearInterval(carouselTimer);
-  carouselTimer = setInterval(function () { goSlide(slideIndex + 1); }, 6500);
-});
-
-document.querySelectorAll('.search-tab').forEach(function (tab) {
-  tab.addEventListener('click', function () {
-    document.querySelectorAll('.search-tab').forEach(function (item) { item.classList.toggle('active', item === tab); });
-    const feedback = document.querySelector('#search-feedback');
-    const kindName = tab.textContent.trim().toLowerCase();
-    if (feedback) feedback.textContent = 'Trip type selected: ' + kindName + '. Choose your destination and travel date below.';
-    document.querySelector('#search-form').dataset.kind = tab.dataset.kind;
-  });
-});
-document.querySelector('.header-search')?.addEventListener('click', function () {
-  document.querySelector('.travelix-search')?.scrollIntoView({behavior:'smooth', block:'center'});
-});
-document.querySelector('#search-form').addEventListener('submit', function (event) {
-  event.preventDefault();
-  const destination = document.querySelector('#search-destination').value;
-  const feedback = document.querySelector('#search-feedback');
-  feedback.textContent = destination ? 'Great choice — ' + destination + '. Send us an enquiry below to plan this trip.' : 'Choose a destination or send us an enquiry and we will help you decide.';
-  if (destination) {
-    const field = document.querySelector('#contact-form [name="destination"]');
-    field.value = destination;
-    document.querySelector('#contact').scrollIntoView({behavior:'smooth'});
-  }
-});
-document.addEventListener('click', function (event) {
-  const link = event.target.closest('[data-destination]');
-  if (!link) return;
-  const field = document.querySelector('#contact-form [name="destination"]');
-  const value = link.dataset.destination;
-  if (field && Array.from(field.options).some(function (option) { return option.value === value; })) field.value = value;
-  else if (field) field.value = 'Not sure yet';
-});
-
-document.querySelector('#contact-form').addEventListener('submit', function (event) {
-  event.preventDefault();
-  const data = new FormData(event.currentTarget);
-  const subject = 'Wintrip travel enquiry — ' + (data.get('destination') || 'Trip planning');
-  const body = [
-    'Name: ' + data.get('name'),
-    'Email: ' + data.get('email'),
-    'Destination: ' + (data.get('destination') || 'Not decided'),
-    'Travel date: ' + (data.get('date') || 'Flexible'),
-    '',
-    String(data.get('message') || '')
-  ].join('\n');
-  document.querySelector('#form-status').textContent = 'Opening your email app with the enquiry details. Nothing is saved by this demo.';
-  window.location.href = 'mailto:wintripsafarishelp@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-});
-const today = new Date();
-const minDate = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-document.querySelectorAll('input[type="date"]').forEach(function (input) { input.min = minDate; });
+let destinations=builtInDestinations.slice();
+const tours=[{name:'The Great Mara Escape',type:'SAFARI & WILDLIFE',duration:'4 days · 3 nights',description:'Look out for lions, elephants and sweeping savannah views on a classic Kenyan safari.',image:'photo-1516426122078-c23e76319801'},{name:'Diani Slow Days',type:'BEACH & RELAXATION',duration:'5 days · 4 nights',description:'Settle into coastal rhythms with beach time, ocean breezes and optional water adventures.',image:'photo-1500375592092-40eb2168fd21'},{name:'Amboseli & the Mountain',type:'WILDLIFE & SCENERY',duration:'3 days · 2 nights',description:'Experience wide-open landscapes and memorable elephant sightings beneath Kilimanjaro.',image:'photo-1516026672322-bc52d61a55d5'}];
+const slugify=s=>String(s||'').toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const img=(v,w=850)=>/^https?:\/\//i.test(v||'')?v:'https://images.unsplash.com/'+v+'?auto=format&fit=crop&w='+w+'&q=83';
+const grid=document.querySelector('#destination-grid'),tourGrid=document.querySelector('#tour-grid');
+function renderDestinations(region='All'){if(!grid)return;const list=destinations.filter(d=>region==='All'||d.region===region);grid.innerHTML=list.map(d=>'<article class="destination-card"><a class="destination-image" href="destination.html?destination='+encodeURIComponent(d.slug||d.name)+'"><img src="'+img(d.image_url||d.image,800)+'" alt="'+esc(d.name)+'" loading="lazy"><span class="destination-country">'+esc(d.country||d.region)+'</span></a><div class="destination-card-body"><h3>'+esc(d.name)+'</h3><p>'+esc(d.tag||d.description||'Explore this destination with Wintrip Safaris')+'</p><div class="destination-card-foot"><span>✦ '+esc(d.days||'Tailor-made stays')+'</span><a href="destination.html?destination='+encodeURIComponent(d.slug||d.name)+'">DISCOVER ↗</a></div></div></article>').join('');}
+function renderTours(){if(!tourGrid)return;tourGrid.innerHTML=tours.map(t=>'<article class="tour-card"><div class="tour-image"><img src="'+img(t.image,900)+'" alt="'+esc(t.name)+'" loading="lazy"><span class="tour-type">'+t.type+'</span></div><div class="tour-body"><h3>'+t.name+'</h3><p>'+t.description+'</p><div class="tour-foot"><span>◷ '+t.duration+'</span><a href="#contact" data-destination="'+esc(t.name)+'">ENQUIRE ↗</a></div></div></article>').join('');}
+renderDestinations();renderTours();
+document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderDestinations(b.dataset.region);}));
+const toggle=document.querySelector('.nav-toggle'),nav=document.querySelector('.nav');toggle?.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'×':'☰';});nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle?.setAttribute('aria-expanded','false');if(toggle)toggle.textContent='☰';}));
+const slides=[...document.querySelectorAll('.hero-slide')],dots=[...document.querySelectorAll('.hero-dots button')];let current=0;function showSlide(i){if(!slides.length)return;current=(i+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('active',n===current));dots.forEach((d,n)=>d.classList.toggle('active',n===current));}document.querySelector('.hero-arrow.prev')?.addEventListener('click',()=>showSlide(current-1));document.querySelector('.hero-arrow.next')?.addEventListener('click',()=>showSlide(current+1));dots.forEach((d,i)=>d.addEventListener('click',()=>showSlide(i)));let timer=slides.length?setInterval(()=>showSlide(current+1),6500):null;document.querySelector('.hero')?.addEventListener('mouseenter',()=>clearInterval(timer));document.querySelector('.hero')?.addEventListener('mouseleave',()=>{if(slides.length){clearInterval(timer);timer=setInterval(()=>showSlide(current+1),6500);}});
+document.querySelectorAll('.search-tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.search-tab').forEach(x=>x.classList.toggle('active',x===tab));const f=document.querySelector('#search-feedback');if(f)f.textContent='Trip type selected: '+tab.textContent.trim().toLowerCase()+'. Choose your destination and travel date below.';}));document.querySelector('.header-search')?.addEventListener('click',()=>document.querySelector('.travelix-search')?.scrollIntoView({behavior:'smooth',block:'center'}));
+document.querySelector('#search-form')?.addEventListener('submit',e=>{e.preventDefault();const value=document.querySelector('#search-destination').value;if(value)location.href='destination.html?destination='+encodeURIComponent(value);else document.querySelector('#search-feedback').textContent='Choose a destination or send us an enquiry and we will help you decide.';});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-destination]');if(!a)return;const f=document.querySelector('#contact-form [name="destination"]');if(f)f.value=[...f.options].some(o=>o.value===a.dataset.destination)?a.dataset.destination:'Not sure yet';});
+function sendEmailFallback(p){const body=['Name: '+p.name,'Email: '+p.email,'Destination: '+(p.destination||'Not decided'),'Travel date: '+(p.travel_date||'Flexible'),'','Trip details:',p.message].join('\n');location.href='mailto:wintripsafarishelp@gmail.com?subject='+encodeURIComponent('Wintrip travel enquiry — '+(p.destination||'Trip planning'))+'&body='+encodeURIComponent(body);}
+document.querySelector('#contact-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,status=document.querySelector('#form-status'),p=Object.fromEntries(new FormData(form).entries());status.textContent='Submitting your enquiry…';try{const r=await fetch('api/enquiries.php',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Enquiry could not be submitted.');status.textContent=d.message||'Thank you. Your enquiry has been received.';form.reset();}catch(err){status.textContent='The enquiry service is unavailable. Opening your email app with the enquiry details.';sendEmailFallback(p);}});
+document.querySelector('#newsletter-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,email=form.querySelector('[name="email"]').value.trim(),status=document.querySelector('#newsletter-status'),button=form.querySelector('button');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Please enter a valid email address.';return;}button.disabled=true;status.textContent='Submitting…';try{const r=await fetch('api/newsletter.php',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Subscription failed.');status.textContent=d.message||'Thanks for subscribing!';form.reset();}catch(err){status.textContent=err.message||'We could not complete your subscription. Please try again.';}finally{button.disabled=false;}});
+async function loadDestinationList(){try{const r=await fetch('api/destinations.php',{headers:{Accept:'application/json'}});if(!r.ok)throw new Error('Destination API unavailable');const d=await r.json();if(!Array.isArray(d.destinations)||!d.destinations.length)return;destinations=d.destinations.map(x=>({...x,image:x.image_url,tag:x.description}));renderDestinations(document.querySelector('.filter.active')?.dataset.region||'All');const select=document.querySelector('#search-destination');if(select){const old=select.value;select.innerHTML='<option value="">Where do you want to go?</option>'+destinations.map(x=>'<option value="'+esc(x.slug||x.name)+'">'+esc(x.name)+'</option>').join('');select.value=old;}}catch(err){console.info('Using built-in destination content until PHP/MySQL is configured.',err.message);}}loadDestinationList();
+const now=new Date(),min=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');document.querySelectorAll('input[type="date"]').forEach(x=>x.min=min);
+async function renderDestinationDetail(){const root=document.querySelector('#destination-detail');if(!root)return;const requested=new URLSearchParams(location.search).get('destination')||new URLSearchParams(location.search).get('slug')||'';let d=destinations.find(x=>slugify(x.slug||x.name)===slugify(requested)||slugify(x.name)===slugify(requested));try{const r=await fetch('api/destinations.php?destination='+encodeURIComponent(requested),{headers:{Accept:'application/json'}});if(r.ok){const data=await r.json();if(data.destination)d=data.destination;}}catch(err){console.info('Using local destination details because the API is unavailable.',err.message);}if(!d){root.innerHTML='<div class="destination-not-found"><p class="eyebrow">DESTINATION NOT FOUND</p><h1>Let’s find somewhere wonderful.</h1><p>We could not find that destination. Browse our destinations or send us an enquiry.</p><a class="gradient-btn" href="index.html#destinations">BROWSE DESTINATIONS →</a></div>';return;}let highlights=d.highlights||[];if(typeof highlights==='string'){try{highlights=JSON.parse(highlights);}catch(_){highlights=[];}}const name=d.name||'Destination',region=d.region||d.country||'Explore with Wintrip',photo=d.image_url||img(d.image||'photo-1516426122078-c23e76319801',1600),description=d.description||d.tag||'Discover this destination with a journey thoughtfully planned around you.',guidance=d.visitor_guidance||d.guidance||'Speak with our team before travelling for tailored advice on local conditions, transport, packing and visitor guidance.',best=d.best_time||'The best time to visit depends on your preferred activities and seasonal conditions.';root.innerHTML='<section class="destination-detail-hero" style="--destination-image:url(&quot;'+esc(photo)+'&quot;)"><div class="destination-detail-hero-copy"><p class="eyebrow light">'+esc(region)+'</p><h1>'+esc(name)+'</h1><p>'+esc(d.tag||'A journey worth remembering')+'</p><a class="gradient-btn" href="#destination-enquiry">ENQUIRE ABOUT THIS DESTINATION <b>→</b></a></div></section><div class="destination-detail-layout"><article class="destination-detail-main"><p class="eyebrow">DISCOVER '+esc(name.toUpperCase())+'</p><h2>A closer look at '+esc(name)+'</h2><p class="destination-description">'+esc(description)+'</p>'+(highlights.length?'<section class="detail-panel"><h3>Things to experience</h3><ul>'+highlights.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></section>':'')+'<section class="detail-panel"><h3>Regional information</h3><p><strong>Region:</strong> '+esc(region)+'</p><p>'+esc(d.region_description||('Explore '+name+' and the surrounding region with local insight and a flexible itinerary.'))+'</p></section><section class="detail-panel"><h3>When to visit</h3><p>'+esc(best)+'</p></section><section class="detail-panel"><h3>Visitor guidance</h3><p>'+esc(guidance)+'</p><p class="detail-disclaimer">Travel requirements and local conditions can change. Confirm current entry, health and safety guidance with official sources before departure.</p></section></article><aside class="destination-detail-aside" id="destination-enquiry"><div class="detail-enquiry-card"><p class="eyebrow">LET’S PLAN YOUR TRIP</p><h3>Interested in '+esc(name)+'?</h3><p>Tell us a little about your plans and our team will help you shape the journey.</p><a class="gradient-btn" href="index.html#contact" data-detail-enquiry="'+esc(name)+'">SEND AN ENQUIRY <b>→</b></a></div><a class="back-destinations" href="index.html#destinations">← Back to all destinations</a></aside></div>';root.querySelector('[data-detail-enquiry]')?.addEventListener('click',()=>{try{sessionStorage.setItem('wintripSelectedDestination',name);}catch(_){}});document.title=name+' | Wintrip Safaris';}
+renderDestinationDetail();
