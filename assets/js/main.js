@@ -18,7 +18,15 @@ function renderDestinations(region='All'){if(!grid)return;const list=destination
 function renderTours(){if(!tourGrid)return;tourGrid.innerHTML=tours.map(t=>'<article class="tour-card"><div class="tour-image"><img src="'+img(t.image,900)+'" alt="'+esc(t.name)+'" loading="lazy"><span class="tour-type">'+t.type+'</span></div><div class="tour-body"><h3>'+t.name+'</h3><p>'+t.description+'</p><div class="tour-foot"><span>◷ '+t.duration+'</span><a href="#contact" data-destination="'+esc(t.name)+'">ENQUIRE ↗</a></div></div></article>').join('');}
 renderDestinations();renderTours();
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderDestinations(b.dataset.region);}));
-const toggle=document.querySelector('.nav-toggle'),nav=document.querySelector('.nav');toggle?.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'×':'☰';});nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle?.setAttribute('aria-expanded','false');if(toggle)toggle.textContent='☰';}));
+const toggle=document.querySelector('.nav-toggle'),nav=document.querySelector('.nav');
+if(toggle&&nav){
+ const closeMenu=()=>{nav.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.textContent='☰';};
+ const openMenu=()=>{nav.classList.add('open');toggle.setAttribute('aria-expanded','true');toggle.textContent='×';};
+ toggle.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();nav.classList.contains('open')?closeMenu():openMenu();});
+ nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMenu));
+ document.addEventListener('click',event=>{if(nav.classList.contains('open')&&!nav.contains(event.target)&&!toggle.contains(event.target))closeMenu();});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav.classList.contains('open')){closeMenu();toggle.focus();}});
+}
 const slides=[...document.querySelectorAll('.hero-slide')],dots=[...document.querySelectorAll('.hero-dots button')];let current=0;function showSlide(i){if(!slides.length)return;current=(i+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('active',n===current));dots.forEach((d,n)=>d.classList.toggle('active',n===current));}document.querySelector('.hero-arrow.prev')?.addEventListener('click',()=>showSlide(current-1));document.querySelector('.hero-arrow.next')?.addEventListener('click',()=>showSlide(current+1));dots.forEach((d,i)=>d.addEventListener('click',()=>showSlide(i)));let timer=slides.length?setInterval(()=>showSlide(current+1),6500):null;document.querySelector('.hero')?.addEventListener('mouseenter',()=>clearInterval(timer));document.querySelector('.hero')?.addEventListener('mouseleave',()=>{if(slides.length){clearInterval(timer);timer=setInterval(()=>showSlide(current+1),6500);}});
 document.querySelectorAll('.search-tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.search-tab').forEach(x=>x.classList.toggle('active',x===tab));const f=document.querySelector('#search-feedback');if(f)f.textContent='Trip type selected: '+tab.textContent.trim().toLowerCase()+'. Choose your destination and travel date below.';}));
 document.querySelector('#search-form')?.addEventListener('submit',e=>{e.preventDefault();const value=document.querySelector('#search-destination').value;if(value)location.href='destination.html?destination='+encodeURIComponent(value);else document.querySelector('#search-feedback').textContent='Choose a destination or send us an enquiry and we will help you decide.';});
@@ -36,43 +44,47 @@ renderDestinationDetail();
 (()=>{const button=document.querySelector('.back-to-top');if(!button)return;const update=()=>button.classList.toggle('is-visible',window.scrollY>320);window.addEventListener('scroll',update,{passive:true});update();button.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));})();
 
 
-// Expandable site search: searches visible page sections and links to matching content.
+// Expandable website search. Includes destinations and tours, with touch-friendly results.
 (()=>{
  const trigger=document.querySelector('.header-search');
  const panel=document.querySelector('#site-search-panel');
  const input=document.querySelector('#site-search-input');
  const results=document.querySelector('#site-search-results');
- if(trigger&&panel&&input&&results){
-  const close=()=>{panel.hidden=true;trigger.setAttribute('aria-expanded','false');};
-  const getSearchItems=()=>{
-   const items=[];
-   document.querySelectorAll('main section[id], main article[id], main [data-destination]').forEach((el)=>{
-    if(el.closest('#site-search-panel'))return;
-    const heading=el.querySelector('h1,h2,h3,h4');
-    const title=(heading?.textContent||el.getAttribute('data-destination')||el.id.replace(/[-_]/g,' ')).trim();
-    const body=(el.innerText||el.textContent||'').replace(/\s+/g,' ').trim();
-    if(body.length>15)items.push({title,body,id:el.id||'destinations',destination:el.getAttribute('data-destination')});
-   });
-   return items;
-  };
-  const runSearch=()=>{
-   const query=input.value.trim().toLowerCase();
-   if(!query){results.innerHTML='<p>Try searching for a destination, safari or travel service.</p>';return;}
-   const words=query.split(/\s+/).filter(Boolean);
-   const matches=getSearchItems().map(item=>({...item,score:words.reduce((n,w)=>n+((item.title+' '+item.body).toLowerCase().includes(w)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
-   if(!matches.length){results.innerHTML='<p>No matches found. Try another destination or keyword.</p>';return;}
-   const prefix=location.pathname.endsWith('destination.html')?'index.html':'';
-   results.innerHTML='<ul>'+matches.map(item=>'<li><a href="'+prefix+'#'+encodeURIComponent(item.id)+'"><strong>'+escapeSearchText(item.title)+'</strong><small>'+escapeSearchText(item.body.slice(0,115))+(item.body.length>115?'…':'')+'</small></a></li>').join('')+'</ul>';
-   results.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
-  };
-  const escapeSearchText=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  trigger.addEventListener('click',()=>{panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){input.focus();runSearch();}});
-  input.addEventListener('input',runSearch);
-  panel.querySelector('.site-search-close')?.addEventListener('click',close);
-  panel.querySelector('form')?.addEventListener('submit',e=>{e.preventDefault();runSearch();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){close();trigger.focus();}});
-  document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!trigger.contains(e.target))close();});
- }
+ if(!trigger||!panel||!input||!results)return;
+ const escapeText=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+ const close=()=>{panel.hidden=true;trigger.setAttribute('aria-expanded','false');};
+ const getItems=()=>{
+  const items=[];
+  document.querySelectorAll('main section[id],main article[id],main .destination-card,main .tour-card,main .destination-detail-main .detail-panel').forEach(el=>{
+   const heading=el.querySelector('h1,h2,h3,h4');
+   const title=(heading?.textContent||el.id?.replace(/[-_]/g,' ')||'').trim();
+   const body=(el.innerText||el.textContent||'').replace(/\\s+/g,' ').trim();
+   const link=el.matches('.destination-card,.tour-card')?el.querySelector('a[href]'):null;
+   const id=el.id||el.closest('section[id]')?.id||'destinations';
+   const href=link?.getAttribute('href')||(location.pathname.endsWith('destination.html')?'index.html#destinations':'#'+id);
+   if(title&&body.length>8)items.push({title,body,href});
+  });
+  return items;
+ };
+ const runSearch=()=>{
+  const query=input.value.trim().toLowerCase();
+  if(!query){results.innerHTML='<p>Try a destination, safari or travel service.</p>';return;}
+  const words=query.split(/\\s+/).filter(Boolean);
+  const matches=getItems().map(item=>({...item,score:words.reduce((score,word)=>score+((item.title+' '+item.body).toLowerCase().includes(word)?1:0),0)})).filter(item=>item.score>0).sort((x,y)=>y.score-x.score).slice(0,10);
+  if(!matches.length){results.innerHTML='<p>No matches found. Try another destination or keyword.</p>';return;}
+  results.innerHTML='<ul>'+matches.map(item=>'<li><a href="'+escapeText(item.href)+'"><strong>'+escapeText(item.title)+'</strong><small>'+escapeText(item.body.slice(0,105))+(item.body.length>105?'…':'')+'</small></a></li>').join('')+'</ul>';
+  results.querySelectorAll('a').forEach(link=>link.addEventListener('click',close));
+ };
+ trigger.addEventListener('click',event=>{
+  event.preventDefault();event.stopPropagation();
+  const opening=panel.hidden;panel.hidden=!opening;trigger.setAttribute('aria-expanded',String(opening));
+  if(opening){runSearch();window.setTimeout(()=>input.focus({preventScroll:true}),40);}
+ });
+ input.addEventListener('input',runSearch);
+ panel.querySelector('.site-search-close')?.addEventListener('click',close);
+ panel.querySelector('form')?.addEventListener('submit',event=>{event.preventDefault();runSearch();});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!panel.hidden){close();trigger.focus();}});
+ document.addEventListener('click',event=>{if(!panel.hidden&&!panel.contains(event.target)&&!trigger.contains(event.target))close();});
 })();
 
 // Back-to-top control appears after scrolling and sits just above the WhatsApp shortcut.
