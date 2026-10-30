@@ -10,3 +10,26 @@
 .detail-header-cta{background:var(--purple);color:white;padding:12px 16px;font-size:10px;font-weight:800;white-space:nowrap}
 @media(max-width:820px){.destination-detail-hero{min-height:390px;padding:75px 24px}.destination-detail-layout{grid-template-columns:1fr;gap:30px;padding:48px 22px 65px}.destination-detail-aside{position:static}.detail-header-cta{display:none}}
 @media(max-width:520px){.destination-detail-hero{min-height:350px;padding:65px 20px}.destination-detail-hero h1{font-size:43px}.destination-detail-hero-copy>p:not(.eyebrow){font-size:13px}.destination-detail-layout{padding:38px 18px 55px}.detail-enquiry-card{padding:22px}}
+
+
+/* Destination detail page responsive refinements */
+@media(max-width:820px){
+ .destination-detail-hero{min-height:360px!important;padding:66px 24px!important;background-position:center!important}
+ .destination-detail-layout{width:100%!important;max-width:100%!important;grid-template-columns:minmax(0,1fr)!important;gap:26px!important;padding:38px 22px 60px!important;box-sizing:border-box!important}
+ .destination-detail-main{min-width:0!important;width:100%!important}
+ .destination-detail-main h2{font-size:clamp(25px,5vw,34px)!important;overflow-wrap:anywhere!important}
+ .destination-description,.detail-panel p{font-size:14px!important;line-height:1.75!important;overflow-wrap:anywhere!important}
+ .detail-panel{padding:20px 0!important;min-width:0!important}
+ .detail-panel ul{padding-left:19px!important;overflow-wrap:anywhere!important}
+ .destination-detail-aside{position:static!important;width:100%!important;min-width:0!important}
+ .detail-enquiry-card{width:100%!important;box-sizing:border-box!important;padding:24px!important}
+}
+@media(max-width:520px){
+ .destination-detail-hero{min-height:320px!important;padding:54px 18px!important}
+ .destination-detail-hero h1{font-size:clamp(34px,10vw,44px)!important;line-height:1.08!important;overflow-wrap:anywhere!important}
+ .destination-detail-hero-copy>p:not(.eyebrow){font-size:13px!important;line-height:1.65!important}
+ .destination-detail-layout{padding:30px 17px 48px!important}
+ .destination-detail-main h2{font-size:26px!important}
+ .detail-panel h3{font-size:17px!important}
+ .detail-enquiry-card{padding:20px!important}
+}
