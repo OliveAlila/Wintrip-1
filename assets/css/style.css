@@ -222,3 +222,18 @@ html{scroll-padding-top:90px}
 .nav a{padding:8px 0;}
 @media(max-width:820px){.header{height:112px;}.header-inner{height:78px;}.nav{top:77px;}}
 @media(max-width:520px){.header{height:100px;}.header-inner{height:73px;}.nav{top:72px;}}
+
+
+/* Newsletter component and consistent white brand mark */
+.newsletter-section{max-width:1264px;margin:0 auto;padding:62px 28px;display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center;background:#f1eef6}
+.newsletter-copy h2{font:700 clamp(28px,3.2vw,40px)/1.2 Montserrat,sans-serif;color:var(--navy);letter-spacing:-.04em;margin:9px 0}
+.newsletter-copy h2 em{font-style:normal;color:var(--purple2)}
+.newsletter-copy>p:last-child{font-size:12px;color:var(--muted);line-height:1.8;max-width:450px;margin:0}
+.newsletter-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+.newsletter-form input{min-width:0;padding:14px 15px;border:1px solid #e3ddea;background:white;color:var(--ink);font:12px 'Open Sans',sans-serif;outline-color:var(--purple)}
+.newsletter-form button{border:0;background:var(--purple);color:white;padding:0 18px;font-size:10px;font-weight:800;letter-spacing:.06em;white-space:nowrap}
+.newsletter-form button:disabled{opacity:.65;cursor:wait}
+.newsletter-form>p{grid-column:1/-1;margin:0;color:var(--muted);font-size:10px}
+.footer-logo img{background:transparent!important;padding:0!important;filter:brightness(0) invert(1) drop-shadow(0 1px 2px #0008)!important}
+@media(max-width:820px){.newsletter-section{padding:48px 24px;grid-template-columns:1fr;gap:22px}}
+@media(max-width:520px){.newsletter-section{padding:42px 18px}.newsletter-form{grid-template-columns:1fr}.newsletter-form button{min-height:42px}}
