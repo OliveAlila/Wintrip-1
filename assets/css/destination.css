@@ -1,0 +1,12 @@
+.destination-loading,.destination-not-found{max-width:850px;margin:80px auto;padding:40px 24px;text-align:center;color:var(--muted)}
+.destination-detail-hero{min-height:470px;display:flex;align-items:center;padding:80px max(28px,calc((100% - 1264px)/2));background:linear-gradient(90deg,#171529df,#201d3b80),var(--destination-image) center/cover;color:#fff}
+.destination-detail-hero-copy{max-width:700px}.destination-detail-hero h1{font:800 clamp(42px,6vw,76px)/1.05 Montserrat,sans-serif;letter-spacing:-.05em;margin:12px 0}.destination-detail-hero-copy>p:not(.eyebrow){font-size:16px;color:#f0eaf5;margin:0 0 24px}
+.destination-detail-layout{max-width:1264px;margin:0 auto;padding:70px 28px 90px;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:65px;align-items:start}
+.destination-detail-main h2{font:700 clamp(28px,3vw,40px)/1.2 Montserrat,sans-serif;color:var(--navy);margin:10px 0 18px;letter-spacing:-.04em}
+.destination-description,.detail-panel p{font-size:14px;line-height:1.9;color:#716c80}
+.detail-panel{padding:25px 0;border-top:1px solid var(--line)}.detail-panel h3{font:700 19px Montserrat,sans-serif;color:var(--navy);margin:0 0 13px}.detail-panel ul{padding-left:21px;margin:0;color:#716c80;line-height:2}.detail-panel li::marker{color:var(--purple)}
+.detail-disclaimer{font-size:11px!important;color:#91899b!important}
+.destination-detail-aside{position:sticky;top:30px}.detail-enquiry-card{background:#f1eef6;padding:28px}.detail-enquiry-card h3{font:700 23px/1.25 Montserrat,sans-serif;color:var(--navy);margin:10px 0}.detail-enquiry-card>p:not(.eyebrow){font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:20px}.detail-enquiry-card .gradient-btn{width:100%;font-size:9px;gap:8px;padding:14px 12px}.back-destinations{display:inline-block;margin-top:20px;color:var(--purple2);font-size:11px;font-weight:800}
+.detail-header-cta{background:var(--purple);color:white;padding:12px 16px;font-size:10px;font-weight:800;white-space:nowrap}
+@media(max-width:820px){.destination-detail-hero{min-height:390px;padding:75px 24px}.destination-detail-layout{grid-template-columns:1fr;gap:30px;padding:48px 22px 65px}.destination-detail-aside{position:static}.detail-header-cta{display:none}}
+@media(max-width:520px){.destination-detail-hero{min-height:350px;padding:65px 20px}.destination-detail-hero h1{font-size:43px}.destination-detail-hero-copy>p:not(.eyebrow){font-size:13px}.destination-detail-layout{padding:38px 18px 55px}.detail-enquiry-card{padding:22px}}
