@@ -24,6 +24,14 @@ function testimonial_clean_html(string $html): string {
                     continue;
                 }
                 $style=[];
+                if ($tag==='font') {
+                    $fontFace=$child->getAttribute('face');
+                    $fontColor=$child->getAttribute('color');
+                    $fontSize=$child->getAttribute('size');
+                    if ($fontFace && preg_match('/^[a-z0-9 ,\\"\\\'-]{1,80}$/i',$fontFace)) $style[]='font-family:'.$fontFace;
+                    if ($fontColor && preg_match('/^(#[0-9a-f]{3,8}|[a-z]{3,20})$/i',$fontColor)) $style[]='color:'.$fontColor;
+                    if ($fontSize && ctype_digit($fontSize)) $style[]='font-size:'.((int)$fontSize+8).'px';
+                }
                 if ($child->hasAttribute('style')) {
                     foreach (explode(';',$child->getAttribute('style')) as $decl) {
                         if (!str_contains($decl,':')) continue;
