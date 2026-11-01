@@ -6,10 +6,7 @@ CREATE TABLE IF NOT EXISTS blog_content (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Keep the content already saved through the previous editor.
-INSERT INTO blog_content (id, title_html, body_html)
+INSERT IGNORE INTO blog_content (id, title_html, body_html)
 SELECT id, title_html, body_html
 FROM testimonials
 WHERE id = 1
-ON DUPLICATE KEY UPDATE
-    title_html = VALUES(title_html),
-    body_html = VALUES(body_html);
