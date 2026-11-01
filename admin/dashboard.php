@@ -16,7 +16,7 @@ function admin_image_src(string $url): string {
  if(preg_match('~^https?://~i',$url) || str_starts_with($url,'data:')) return $url;
  return '../'.ltrim($url,'/');
 }
-$slots=[['home.hero.1','Homepage hero image 1'],['home.hero.2','Homepage hero image 2'],['home.hero.3','Homepage hero image 3'],['home.about.large','About section large image'],['home.about.small','About section small image'],['home.blog','Blog background'],['home.journal.1','Journal image 1'],['home.journal.2','Journal image 2'],['home.journal.3','Journal image 3'],['home.gallery.1','Homepage gallery image 1'],['home.gallery.2','Homepage gallery image 2'],['home.gallery.3','Homepage gallery image 3'],['home.gallery.4','Homepage gallery image 4'],['home.gallery.5','Homepage gallery image 5']];
+$slots=[['home.hero.1','Homepage hero image 1'],['home.hero.2','Homepage hero image 2'],['home.hero.3','Homepage hero image 3'],['home.about.large','About section large image'],['home.about.small','About section small image'],['home.testimonial','Blog background'],['home.journal.1','Journal image 1'],['home.journal.2','Journal image 2'],['home.journal.3','Journal image 3'],['home.gallery.1','Homepage gallery image 1'],['home.gallery.2','Homepage gallery image 2'],['home.gallery.3','Homepage gallery image 3'],['home.gallery.4','Homepage gallery image 4'],['home.gallery.5','Homepage gallery image 5']];
 $siteMap=[]; foreach($siteImages as $si)$siteMap[$si['image_key']]=$si;
 $activeKey=(string)($_GET['section']??$slots[0][0]); $validKeys=array_column($slots,0); if(!in_array($activeKey,$validKeys,true))$activeKey=$slots[0][0];
 $activeSlot=null; foreach($slots as $slot){if($slot[0]===$activeKey){$activeSlot=$slot;break;}} $activeImage=$siteMap[$activeKey]??null;
