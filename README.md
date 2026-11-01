@@ -47,3 +47,14 @@ This project is no longer a frontend-only Vercel prototype. Vercel's static host
 - Destination visa and entry requirements can change. The visitor guidance is general information, not legal or immigration advice; verify requirements with official sources.
 - Confirm the company phone number, email and social links before publishing.
 - Use only images owned, licensed or otherwise authorized for Wintrip Safaris.
+
+
+## Public gallery and private admin
+- Public gallery: `gallery.php` with category filters and a photo lightbox.
+- Homepage gallery preview links to the public gallery.
+- Private administrator sign-in: `admin/index.php`; dashboard: `admin/dashboard.php`. There is no admin link in the public navigation.
+- Import `database/gallery-admin.sql` into the existing MySQL database after the main schema. It creates `admin_users` and `gallery_images` and seeds the 23 Wintrip gallery photographs.
+- Upload the supplied `assets/images/gallery/*.webp` files to the matching path on the host.
+- Visit `/admin/index.php`. On first visit, create the first administrator using an email address and a password of at least 12 characters. Once created, public first-time setup is disabled. Sign in with that account to upload, hide or delete gallery images.
+- Uploads are restricted to JPEG, PNG and WebP, checked by server-side image MIME inspection and limited to 5 MB per image. Uploaded files are stored in `uploads/gallery`; PHP execution is blocked in that directory.
+- Keep `api/config.php` private and never commit it. Use HTTPS for admin sign-in.
