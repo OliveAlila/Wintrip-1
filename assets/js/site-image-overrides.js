@@ -19,7 +19,7 @@
   document.querySelectorAll('.hero-slide').forEach((el,i)=>applyImage('home.hero.'+(i+1),el,'background'));
   applyImage('home.about.large',document.querySelector('.intro-large'));
   applyImage('home.about.small',document.querySelector('.intro-small'));
-  const testimonial=document.querySelector('.testimonial-photo');
+  const testimonial=document.querySelector('.blog-photo');
   if(images['home.testimonial']&&images['home.testimonial'].url&&testimonial){
    const url=imageUrl(images['home.testimonial'].url);
    testimonial.style.backgroundImage='url("'+url.replace(/"/g,'%22')+'")';
