@@ -39,4 +39,4 @@ try{
   $_SESSION['admin_flash']='Destination image order updated.';
  } else throw new RuntimeException('Unknown image-management action.');
 } catch(Throwable $e){if(isset($pdo)&&$pdo instanceof PDO&&$pdo->inTransaction())$pdo->rollBack();error_log('Wintrip image manager: '.$e->getMessage());$_SESSION['admin_flash']='Could not save: '.$e->getMessage();}
-$anchor=($_POST['action']??'')==='save_site'?'#homepage-images':'#destination-images';$dest=(int)($_POST['destination_id']??0);header('Location: dashboard.php'.($dest?'?destination_id='.$dest:'').$anchor);exit;
+$action=(string)($_POST['action']??''); $anchor=$action==='save_site'?'#homepage-images':'#destination-images'; $dest=(int)($_POST['destination_id']??0); $query=[]; if($dest)$query['destination_id']=$dest; if($action==='save_site'&&!empty($_POST['image_key']))$query['section']=(string)$_POST['image_key']; header('Location: dashboard.php'.($query?'?'.http_build_query($query):'').$anchor); exit;
