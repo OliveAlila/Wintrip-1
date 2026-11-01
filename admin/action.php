@@ -1,0 +1,12 @@
+<?php
+require __DIR__.'/bootstrap.php';admin_require_login();if($_SERVER['REQUEST_METHOD']!=='POST'){http_response_code(405);exit('Method not allowed');}admin_verify_csrf();$pdo=admin_db();$action=$_POST['action']??'';
+if($action==='upload'){
+ $category=$_POST['category']??'Wildlife';$allowed=['Wildlife','Safaris','Our Guests','Landscapes','Experiences'];if(!in_array($category,$allowed,true))admin_redirect('Choose a valid image category.');
+ $files=$_FILES['photos']??null;if(!$files||!is_array($files['name']))admin_redirect('Choose at least one image.');
+ $dir=dirname(__DIR__).'/uploads/gallery/';if(!is_dir($dir)&&!mkdir($dir,0755,true))admin_redirect('Could not create the image upload folder.');
+ $ok=0;for($i=0;$i<count($files['name']);$i++){if(($files['error'][$i]??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_OK)continue;$tmp=$files['tmp_name'][$i];$size=(int)$files['size'][$i];if($size<1||$size>5*1024*1024||!is_uploaded_file($tmp))continue;$info=@getimagesize($tmp);$mime=$info['mime']??'';$ext=['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp'][$mime]??null;if(!$ext)continue;$filename=bin2hex(random_bytes(16)).'.'.$ext;if(!move_uploaded_file($tmp,$dir.$filename))continue;$title=trim((string)($_POST['title']??''));if($title==='')$title='Wintrip safari photograph';if(count($files['name'])>1)$title.=' '.($i+1);$stmt=$pdo->prepare('INSERT INTO gallery_images(title,category,image_url,sort_order) VALUES(?,?,?,(SELECT COALESCE(MAX(sort_order),0)+1 FROM (SELECT sort_order FROM gallery_images) x))');$stmt->execute([$title,$category,'uploads/gallery/'.$filename]);$ok++;}
+ admin_redirect($ok.' image(s) uploaded.');}
+$id=(int)($_POST['id']??0);if($id<1)admin_redirect('Invalid image selected.');
+if($action==='toggle'){$pdo->prepare('UPDATE gallery_images SET is_active=1-is_active WHERE id=?')->execute([$id]);admin_redirect('Image visibility updated.');}
+if($action==='delete'){$q=$pdo->prepare('SELECT image_url FROM gallery_images WHERE id=?');$q->execute([$id]);$row=$q->fetch();if($row){$path=dirname(__DIR__).'/'.ltrim($row['image_url'],'/');if(str_starts_with(realpath(dirname($path))?:'',realpath(dirname(__DIR__).'/uploads/gallery')?:'')&&is_file($path))@unlink($path);$pdo->prepare('DELETE FROM gallery_images WHERE id=?')->execute([$id]);}admin_redirect('Image deleted.');}
+admin_redirect('Unknown action.');
