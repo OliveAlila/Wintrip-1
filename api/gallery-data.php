@@ -1,0 +1,11 @@
+<?php
+declare(strict_types=1);
+function wintrip_gallery_photos(): array {
+ $defaults = [
+ ['wintrip-01.webp','Wildlife','Waterbuck in the wild'],['wintrip-02.webp','Wildlife','Lioness in the savannah'],['wintrip-03.webp','Our Guests','Safari guests with Wintrip vehicle'],['wintrip-04.webp','Wildlife','Lions in the Mara'],['wintrip-05.webp','Wildlife','Elephant in the bush'],['wintrip-06.webp','Landscapes','Rock formations and open country'],['wintrip-07.webp','Landscapes','A quiet wilderness landscape'],['wintrip-08.webp','Wildlife','Lioness and cub'],['wintrip-09.webp','Wildlife','Antelope herd'],['wintrip-10.webp','Experiences','A lion at a picnic stop'],['wintrip-11.webp','Our Guests','Guests enjoying a safari outing'],['wintrip-12.webp','Wildlife','Giraffe on the plains'],['wintrip-13.webp','Wildlife','Lion resting in the shade'],['wintrip-14.webp','Wildlife','Antelopes by the water'],['wintrip-15.webp','Safaris','Wintrip safari vehicle'],['wintrip-16.webp','Our Guests','Guests beside a safari vehicle'],['wintrip-17.webp','Safaris','Game drive with lions'],['wintrip-18.webp','Experiences','A bush picnic experience'],['wintrip-19.webp','Our Guests','Family safari memories'],['wintrip-20.webp','Our Guests','A Wintrip guest moment'],['wintrip-21.webp','Our Guests','Friends on safari'],['wintrip-22.webp','Experiences','A safari picnic in the bush'],['wintrip-23.webp','Experiences','A visit to Salt Lick Safari Lodge']
+ ];
+ $photos=[]; $file=__DIR__.'/config.php';
+ if (is_file($file)) { try { $c=require $file; $pdo=new PDO(sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4',$c['host'],$c['database']),$c['username'],$c['password'],[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]); $q=$pdo->query("SELECT id,title,category,image_url FROM gallery_images WHERE is_active=1 ORDER BY sort_order,id"); $photos=$q->fetchAll(); } catch(Throwable $e) { error_log('Gallery database: '.$e->getMessage()); } }
+ if (!$photos) { foreach($defaults as $i=>$d) $photos[]=['id'=>$i+1,'image_url'=>'assets/images/gallery/'.$d[0],'category'=>$d[1],'title'=>$d[2]]; }
+ return $photos;
+}
