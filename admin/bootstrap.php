@@ -17,4 +17,4 @@ function admin_csrf(): string { if(empty($_SESSION['admin_csrf']))$_SESSION['adm
 function admin_verify_csrf(): void { if(!hash_equals($_SESSION['admin_csrf']??'',$_POST['csrf']??'')){http_response_code(419);exit('Your session expired. Refresh the page and try again.');} }
 function admin_require_login(): void { if(empty($_SESSION['admin_id'])){header('Location: index.php');exit;} }
 function admin_h($v): string {return htmlspecialchars((string)$v,ENT_QUOTES,'UTF-8');}
-function admin_redirect(string $message=''): never { if($message!=='')$_SESSION['admin_flash']=$message;header('Location: dashboard.php');exit; }
+function admin_redirect(string $message=''): void { if($message!=='')$_SESSION['admin_flash']=$message;header('Location: dashboard.php');exit; }
