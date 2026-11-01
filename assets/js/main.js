@@ -12,7 +12,13 @@ let destinations=builtInDestinations.slice();
 const tours=[{name:'The Great Mara Escape',type:'SAFARI & WILDLIFE',duration:'4 days · 3 nights',description:'Look out for lions, elephants and sweeping savannah views on a classic Kenyan safari.',image:'photo-1516426122078-c23e76319801'},{name:'Diani Slow Days',type:'BEACH & RELAXATION',duration:'5 days · 4 nights',description:'Settle into coastal rhythms with beach time, ocean breezes and optional water adventures.',image:'photo-1500375592092-40eb2168fd21'},{name:'Amboseli & the Mountain',type:'WILDLIFE & SCENERY',duration:'3 days · 2 nights',description:'Experience wide-open landscapes and memorable elephant sightings beneath Kilimanjaro.',image:'photo-1516026672322-bc52d61a55d5'}];
 const slugify=s=>String(s||'').toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const img=(v,w=850)=>/^https?:\/\//i.test(v||'')?v:'https://images.unsplash.com/'+v+'?auto=format&fit=crop&w='+w+'&q=83';
+const img=(v,w=850)=>{
+ const value=String(v||'').trim();
+ if(!value)return '';
+ if(/^https?:\\/\\//i.test(value)||value.startsWith('/'))return value;
+ if(value.includes('/')||/\\.(?:jpe?g|png|webp|gif|avif)(?:[?#].*)?$/i.test(value))return value;
+ return 'https://images.unsplash.com/'+value+'?auto=format&fit=crop&w='+w+'&q=83';
+};
 const grid=document.querySelector('#destination-grid'),tourGrid=document.querySelector('#tour-grid');
 function renderDestinations(region='All'){if(!grid)return;const list=destinations.filter(d=>region==='All'||d.region===region);grid.innerHTML=list.map(d=>'<article class="destination-card"><a class="destination-image" href="destination.html?destination='+encodeURIComponent(d.slug||d.name)+'"><img src="'+img(d.image_url||d.image,800)+'" alt="'+esc(d.name)+'" loading="lazy"><span class="destination-country">'+esc(d.country||d.region)+'</span></a><div class="destination-card-body"><h3>'+esc(d.name)+'</h3><p>'+esc(d.tag||d.description||'Explore this destination with Wintrip Safaris')+'</p><div class="destination-card-foot"><span>✦ '+esc(d.days||'Tailor-made stays')+'</span><a href="destination.html?destination='+encodeURIComponent(d.slug||d.name)+'">DISCOVER ↗</a></div></div></article>').join('');}
 function renderTours(){if(!tourGrid)return;tourGrid.innerHTML=tours.map(t=>'<article class="tour-card"><div class="tour-image"><img src="'+img(t.image,900)+'" alt="'+esc(t.name)+'" loading="lazy"><span class="tour-type">'+t.type+'</span></div><div class="tour-body"><h3>'+t.name+'</h3><p>'+t.description+'</p><div class="tour-foot"><span>◷ '+t.duration+'</span><a href="#contact" data-destination="'+esc(t.name)+'">ENQUIRE ↗</a></div></div></article>').join('');}
