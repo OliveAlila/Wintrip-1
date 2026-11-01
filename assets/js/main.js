@@ -157,5 +157,5 @@ renderDestinationDetail();;
 })();
 
 
-// Load the testimonial title and text saved in the admin dashboard.
-(async()=>{const title=document.getElementById('homepage-blog-title'),body=document.getElementById('homepage-blog-text');if(!title||!body)return;try{const response=await fetch('api/blog.php',{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)throw new Error('Testimonials API unavailable');const data=await response.json();if(data.title_html)title.innerHTML=data.title_html;if(data.body_html)body.innerHTML=data.body_html;}catch(error){console.info('Showing default Blog content.',error.message);}})();
+// Load the Blog title and text saved in the admin dashboard.
+(async()=>{const title=document.getElementById('homepage-blog-title'),body=document.getElementById('homepage-blog-text');if(!title||!body)return;try{const response=await fetch('api/blog.php',{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)throw new Error('Blog API unavailable');const data=await response.json();if(data.title_html)title.innerHTML=data.title_html;if(data.body_html)body.innerHTML=data.body_html;}catch(error){console.info('Showing default Blog content.',error.message);}})();
