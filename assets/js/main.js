@@ -15,8 +15,8 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const img=(v,w=850)=>{
  const value=String(v||'').trim();
  if(!value)return '';
- if(/^https?:\\/\\//i.test(value)||value.startsWith('/'))return value;
- if(value.includes('/')||/\\.(?:jpe?g|png|webp|gif|avif)(?:[?#].*)?$/i.test(value))return value;
+ if(/^https?:\/\//i.test(value)||value.startsWith('/'))return value;
+ if(value.includes('/')||/\.(?:jpe?g|png|webp|gif|avif)(?:[?#].*)?$/i.test(value))return value;
  return 'https://images.unsplash.com/'+value+'?auto=format&fit=crop&w='+w+'&q=83';
 };
 const grid=document.querySelector('#destination-grid'),tourGrid=document.querySelector('#tour-grid');
