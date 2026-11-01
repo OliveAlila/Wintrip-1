@@ -1,8 +1,23 @@
-CREATE TABLE IF NOT EXISTS admin_users (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,email VARCHAR(190) NOT NULL UNIQUE,password_hash VARCHAR(255) NOT NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-CREATE TABLE IF NOT EXISTS gallery_images (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,title VARCHAR(180) NOT NULL,category ENUM('Wildlife','Safaris','Our Guests','Landscapes','Experiences') NOT NULL DEFAULT 'Wildlife',image_url VARCHAR(1000) NOT NULL,is_active TINYINT(1) NOT NULL DEFAULT 1,sort_order INT NOT NULL DEFAULT 0,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO gallery_images(title,category,image_url,sort_order)
-SELECT 'Waterbuck in the wild','Wildlife','assets/images/gallery/wintrip-01.webp',1 WHERE NOT EXISTS (SELECT 1 FROM gallery_images);
-INSERT INTO gallery_images(title,category,image_url,sort_order) VALUES
+CREATE TABLE IF NOT EXISTS admin_users (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS gallery_images (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ title VARCHAR(180) NOT NULL,
+ category ENUM('Wildlife','Safaris','Our Guests','Landscapes','Experiences') NOT NULL DEFAULT 'Wildlife',
+ image_url VARCHAR(1000) NOT NULL,
+ is_active TINYINT(1) NOT NULL DEFAULT 1,
+ sort_order INT NOT NULL DEFAULT 0,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE KEY uq_gallery_image_url (image_url)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO gallery_images(title,category,image_url,sort_order) VALUES
+('Waterbuck in the wild','Wildlife','assets/images/gallery/wintrip-01.webp',1),
 ('Lioness in the savannah','Wildlife','assets/images/gallery/wintrip-02.webp',2),
 ('Safari guests with Wintrip vehicle','Our Guests','assets/images/gallery/wintrip-03.webp',3),
 ('Lions in the Mara','Wildlife','assets/images/gallery/wintrip-04.webp',4),
