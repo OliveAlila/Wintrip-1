@@ -57,25 +57,28 @@ $activeSlot=null; foreach($slots as $slot){if($slot[0]===$activeKey){$activeSlot
 .blog-editor-field{margin:18px 0}.blog-editor-field>label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.blog-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:9px;background:#f5f1f7;border:1px solid var(--line);border-radius:9px 9px 0 0}.blog-toolbar button,.blog-toolbar select{min-height:34px;border:1px solid #d9d1df;border-radius:5px;background:#fff;padding:5px 9px;color:#35253e;cursor:pointer}.blog-toolbar button:hover,.blog-toolbar button.is-active{background:#e9dcef}.blog-toolbar select{max-width:150px}.blog-colour{display:flex;align-items:center;gap:5px;font-size:11px}.blog-colour input{width:36px;height:30px;padding:2px;border:1px solid #d9d1df;border-radius:5px}.blog-editable{min-height:76px;padding:15px;border:1px solid var(--line);border-top:0;border-radius:0 0 9px 9px;background:#fff;line-height:1.65;outline:none;overflow-wrap:anywhere}.blog-editable:focus{box-shadow:0 0 0 2px #d9c4e4}.blog-body-edit{min-height:230px}.blog-editable:empty:before{content:'Start writing here…';color:#999;pointer-events:none}
 </style>
 <script>
-(()=> {
- const form=document.getElementById('blog-editor-form'); if(!form)return;
- let savedRange=null,activeEditor=null;
- const remember=editor=>{activeEditor=editor;const selection=window.getSelection();if(selection&&selection.rangeCount&&editor.contains(selection.anchorNode)){savedRange=selection.getRangeAt(0).cloneRange();}};
- const restore=editor=>{editor.focus();const selection=window.getSelection();if(savedRange&&editor.contains(savedRange.commonAncestorContainer)){selection.removeAllRanges();selection.addRange(savedRange);}};
- document.querySelectorAll('.blog-editable').forEach(editor=>{
-  editor.addEventListener('keyup',()=>remember(editor));editor.addEventListener('mouseup',()=>remember(editor));editor.addEventListener('input',()=>remember(editor));editor.addEventListener('focus',()=>remember(editor));
- });
+(()=>{
+ const form=document.getElementById('blog-editor-form');if(!form)return;
+ let savedRanges=new Map();
+ const remember=editor=>{const selection=window.getSelection();if(selection&&selection.rangeCount&&editor.contains(selection.anchorNode)){savedRanges.set(editor.id,selection.getRangeAt(0).cloneRange());}};
+ const restore=editor=>{editor.focus();const range=savedRanges.get(editor.id);if(range&&editor.contains(range.commonAncestorContainer)){const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);}};
+ document.querySelectorAll('.blog-editable').forEach(editor=>['keyup','mouseup','input','focus'].forEach(event=>editor.addEventListener(event,()=>remember(editor))));
  document.querySelectorAll('.blog-toolbar').forEach(toolbar=>{
   const editor=document.getElementById(toolbar.dataset.target);
-  toolbar.addEventListener('pointerdown',event=>{if(event.target.closest('button'))event.preventDefault();remember(editor);});
+  toolbar.addEventListener('pointerdown',()=>remember(editor));
   toolbar.addEventListener('click',event=>{
-   const button=event.target.closest('[data-cmd]'),font=event.target.closest('[data-font]'),size=event.target.closest('[data-size]'),colour=event.target.closest('[data-colour]');
-   if(!button&&!font&&!size&&!colour)return;
+   const button=event.target.closest('[data-cmd]');if(!button)return;
+   restore(editor);document.execCommand(button.dataset.cmd,false,null);remember(editor);
+  });
+  toolbar.addEventListener('change',event=>{
+   const control=event.target.closest('[data-font],[data-size],[data-colour]');if(!control)return;
    restore(editor);
-   if(button)document.execCommand(button.dataset.cmd,false,null);
-   if(font)document.execCommand('fontName',false,font.value);
-   if(size){document.execCommand('fontSize',false,'7');editor.querySelectorAll('font[size="7"]').forEach(node=>{node.removeAttribute('size');node.style.fontSize=size.value;});}
-   if(colour)document.execCommand('foreColor',false,colour.value);
+   if(control.matches('[data-font]'))document.execCommand('fontName',false,control.value);
+   if(control.matches('[data-size]')){
+    document.execCommand('fontSize',false,'7');
+    editor.querySelectorAll('font[size="7"]').forEach(node=>{node.removeAttribute('size');node.style.fontSize=control.value;});
+   }
+   if(control.matches('[data-colour]'))document.execCommand('foreColor',false,control.value);
    remember(editor);
   });
  });
