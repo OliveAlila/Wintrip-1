@@ -5,7 +5,7 @@ try {
  $photos=$pdo->query('SELECT * FROM gallery_images ORDER BY sort_order,id')->fetchAll();
  $destinations=$pdo->query('SELECT id,name,slug,image_url FROM destinations ORDER BY sort_order,name')->fetchAll();
  $siteImages=$pdo->query('SELECT * FROM site_images ORDER BY label')->fetchAll();
- $testimonial=$pdo->query('SELECT title_html,body_html FROM testimonials WHERE id=1')->fetch() ?: ['title_html'=>'It\'s not just where<br>you go. It\'s <em>how you feel.</em>','body_html'=>'Every great journey begins with a little curiosity. Tell us what inspires you, and let\'s make your next escape one to remember.'];
+ $blog=$pdo->query('SELECT title_html,body_html FROM blogs WHERE id=1')->fetch() ?: ['title_html'=>'It\'s not just where<br>you go. It\'s <em>how you feel.</em>','body_html'=>'Every great journey begins with a little curiosity. Tell us what inspires you, and let\'s make your next escape one to remember.'];
  $selected=(int)($_GET['destination_id']??($destinations[0]['id']??0));
  $chosen=null; foreach($destinations as $d){if((int)$d['id']===$selected){$chosen=$d;break;}}
  $gallery=[]; if($chosen){$q=$pdo->prepare('SELECT * FROM destination_images WHERE destination_id=? ORDER BY sort_order,id');$q->execute([$selected]);$gallery=$q->fetchAll();}
@@ -16,7 +16,7 @@ function admin_image_src(string $url): string {
  if(preg_match('~^https?://~i',$url) || str_starts_with($url,'data:')) return $url;
  return '../'.ltrim($url,'/');
 }
-$slots=[['home.hero.1','Homepage hero image 1'],['home.hero.2','Homepage hero image 2'],['home.hero.3','Homepage hero image 3'],['home.about.large','About section large image'],['home.about.small','About section small image'],['home.testimonial','Testimonials background'],['home.journal.1','Journal image 1'],['home.journal.2','Journal image 2'],['home.journal.3','Journal image 3'],['home.gallery.1','Homepage gallery image 1'],['home.gallery.2','Homepage gallery image 2'],['home.gallery.3','Homepage gallery image 3'],['home.gallery.4','Homepage gallery image 4'],['home.gallery.5','Homepage gallery image 5']];
+$slots=[['home.hero.1','Homepage hero image 1'],['home.hero.2','Homepage hero image 2'],['home.hero.3','Homepage hero image 3'],['home.about.large','About section large image'],['home.about.small','About section small image'],['home.blog','Blog background'],['home.journal.1','Journal image 1'],['home.journal.2','Journal image 2'],['home.journal.3','Journal image 3'],['home.gallery.1','Homepage gallery image 1'],['home.gallery.2','Homepage gallery image 2'],['home.gallery.3','Homepage gallery image 3'],['home.gallery.4','Homepage gallery image 4'],['home.gallery.5','Homepage gallery image 5']];
 $siteMap=[]; foreach($siteImages as $si)$siteMap[$si['image_key']]=$si;
 $activeKey=(string)($_GET['section']??$slots[0][0]); $validKeys=array_column($slots,0); if(!in_array($activeKey,$validKeys,true))$activeKey=$slots[0][0];
 $activeSlot=null; foreach($slots as $slot){if($slot[0]===$activeKey){$activeSlot=$slot;break;}} $activeImage=$siteMap[$activeKey]??null;
@@ -27,33 +27,65 @@ $activeSlot=null; foreach($slots as $slot){if($slot[0]===$activeKey){$activeSlot
 <main class="admin-main"><header class="admin-top"><div><span>WINTRIP SAFARIS / ADMIN</span><h1>Website image manager</h1><p>Manage gallery photos, homepage visuals and destination photography from one dashboard.</p></div><div class="admin-user"><?=admin_h($_SESSION['admin_email']??'Administrator')?></div></header>
 <?php if($message): ?><div class="admin-success"><?=admin_h($message)?></div><?php endif; ?>
 <div class="dashboard-stats"><div class="stat-card"><span class="stat-icon">▧</span><div><small>Gallery photos</small><strong><?=count($photos)?></strong></div></div><div class="stat-card"><span class="stat-icon">✓</span><div><small>Visible in gallery</small><strong><?=count(array_filter($photos,fn($p)=>(int)$p['is_active']===1))?></strong></div></div><div class="stat-card"><span class="stat-icon">⌖</span><div><small>Destinations</small><strong><?=count($destinations)?></strong></div></div><div class="stat-card"><span class="stat-icon">▤</span><div><small>Destination image limit</small><strong>10</strong></div></div></div>
-<nav class="admin-anchor-nav"><a href="#gallery">Gallery uploads</a><a href="#testimonials-editor">Testimonials</a><a href="#homepage-images">Homepage images</a><a href="#destination-images">Destination images</a></nav>
+<nav class="admin-anchor-nav"><a href="#gallery">Gallery uploads</a><a href="#blog-editor">Blog</a><a href="#homepage-images">Homepage images</a><a href="#destination-images">Destination images</a></nav>
 <section class="admin-panel section-anchor" id="gallery"><div class="panel-heading"><div><h2>Upload gallery photographs</h2><p>These appear in the public gallery. JPG, PNG or WebP · max 5 MB each.</p></div><span class="image-count"><?=count($photos)?> photos</span></div><form class="upload-form" action="action.php" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf" value="<?=admin_h(admin_csrf())?>"><input type="hidden" name="action" value="upload"><div class="upload-fields"><label>Photo title<input name="title" maxlength="180" placeholder="e.g. Lioness in the Maasai Mara" required></label><label>Category<select name="category"><option>Wildlife</option><option>Safaris</option><option>Our Guests</option><option>Landscapes</option><option>Experiences</option></select></label></div><label class="file-drop"><strong>＋ Choose photographs</strong><span>Select one or more images from your device</span><input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple required></label><button class="admin-button" type="submit">Upload selected images</button></form></section>
 <section class="admin-panel"><div class="admin-section-title"><div><h2>Existing gallery photographs</h2><p>Edit titles and categories, hide, reorder or delete photos.</p></div></div><div class="admin-photo-grid"><?php foreach($photos as $p): ?><article class="admin-photo"><img src="<?=admin_h(admin_image_src($p['image_url']))?>" alt="<?=admin_h($p['title'])?>"><div class="admin-photo-body"><form method="post" action="action.php" class="photo-edit"><input type="hidden" name="csrf" value="<?=admin_h(admin_csrf())?>"><input type="hidden" name="action" value="edit"><input type="hidden" name="id" value="<?=(int)$p['id']?>"><input name="title" maxlength="180" value="<?=admin_h($p['title'])?>" aria-label="Photo title"><select name="category" aria-label="Photo category"><?php foreach(['Wildlife','Safaris','Our Guests','Landscapes','Experiences'] as $cat): ?><option value="<?=admin_h($cat)?>" <?=$p['category']===$cat?'selected':''?>><?=admin_h($cat)?></option><?php endforeach; ?></select><button type="submit">Save details</button></form><span><?=((int)$p['is_active']===1)?'Visible in gallery':'Hidden from gallery'?></span><div class="photo-actions"><form method="post" action="action.php"><input type="hidden" name="csrf" value="<?=admin_h(admin_csrf())?>"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="<?=(int)$p['id']?>"><button type="submit"><?=((int)$p['is_active']===1)?'Hide':'Show'?></button></form><?php foreach(['up','down'] as $dir): ?><form method="post" action="action.php"><input type="hidden" name="csrf" value="<?=admin_h(admin_csrf())?>"><input type="hidden" name="action" value="move"><input type="hidden" name="direction" value="<?=$dir?>"><input type="hidden" name="id" value="<?=(int)$p['id']?>"><button type="submit"><?=$dir==='up'?'↑':'↓'?></button></form><?php endforeach; ?><form method="post" action="action.php" onsubmit="return confirm('Permanently delete this image?')"><input type="hidden" name="csrf" value="<?=admin_h(admin_csrf())?>"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?=(int)$p['id']?>"><button class="danger" type="submit">Delete</button></form></div></div></article><?php endforeach; ?></div></section>
-<section class="admin-panel section-anchor" id="testimonials-editor">
-<div class="admin-section-title"><div><h2>Testimonials content editor</h2><p>Edit the testimonial heading and text shown on the homepage. Format them like a word processor.</p></div></div>
-<form method="post" action="save-testimonials.php" id="testimonial-editor-form">
+<section class="admin-panel section-anchor" id="blog-editor">
+<div class="admin-section-title"><div><h2>Blog editor</h2><p>Edit the heading and text displayed in the homepage Blog section.</p></div></div>
+<form method="post" action="save-blog.php" id="blog-editor-form">
 <input type="hidden" name="csrf" value="<?=admin_h(admin_csrf())?>">
-<input type="hidden" name="title_html" id="testimonial-title-html"><input type="hidden" name="body_html" id="testimonial-body-html">
-<div class="testimonial-editor-field"><label for="testimonial-title-edit">Testimonial title</label>
-<div class="testimonial-toolbar" data-target="testimonial-title-edit">
-<button type="button" data-command="bold"><b>B</b></button><button type="button" data-command="italic"><i>I</i></button><button type="button" data-command="underline"><u>U</u></button>
-<select data-font aria-label="Font family"><option>Arial</option><option>Georgia</option><option>Times New Roman</option><option>Verdana</option><option>Montserrat</option></select>
-<select data-size aria-label="Font size"><option value="3">Normal</option><option value="4">Large</option><option value="5">Larger</option><option value="6">Very large</option><option value="7">Largest</option></select>
-<label>Colour <input type="color" data-colour value="#682080"></label><button type="button" data-command="removeFormat">Clear</button></div>
-<div id="testimonial-title-edit" class="testimonial-editable" contenteditable="true"><?= $testimonial['title_html'] ?></div></div>
-<div class="testimonial-editor-field"><label for="testimonial-body-edit">Testimonial text</label>
-<div class="testimonial-toolbar" data-target="testimonial-body-edit">
-<button type="button" data-command="bold"><b>B</b></button><button type="button" data-command="italic"><i>I</i></button><button type="button" data-command="underline"><u>U</u></button>
-<button type="button" data-command="insertUnorderedList">• List</button><button type="button" data-command="insertOrderedList">1. List</button><button type="button" data-command="justifyLeft">⇤</button><button type="button" data-command="justifyCenter">↔</button>
-<select data-font aria-label="Font family"><option>Arial</option><option>Georgia</option><option>Times New Roman</option><option>Verdana</option><option>Montserrat</option></select>
-<select data-size aria-label="Font size"><option value="3">Normal</option><option value="4">Large</option><option value="5">Larger</option><option value="6">Very large</option><option value="7">Largest</option></select>
-<label>Colour <input type="color" data-colour value="#333333"></label><button type="button" data-command="removeFormat">Clear</button></div>
-<div id="testimonial-body-edit" class="testimonial-editable testimonial-body-edit" contenteditable="true"><?= $testimonial['body_html'] ?></div></div>
-<p class="manager-note">Select text first, then apply formatting. Changes appear on the homepage after saving.</p><button class="admin-button" type="submit">Save testimonial content</button>
+<input type="hidden" name="title_html" id="blog-title-html"><input type="hidden" name="body_html" id="blog-body-html">
+<div class="blog-editor-field"><label for="blog-title-edit">Blog title</label>
+<div class="blog-toolbar" data-target="blog-title-edit">
+<button type="button" data-cmd="bold" title="Bold"><b>B</b></button><button type="button" data-cmd="italic" title="Italic"><i>I</i></button><button type="button" data-cmd="underline" title="Underline"><u>U</u></button><button type="button" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+<select data-font aria-label="Font family"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option><option value="Montserrat">Montserrat</option></select>
+<select data-size aria-label="Font size"><option value="12px">12</option><option value="14px">14</option><option value="16px" selected>16</option><option value="18px">18</option><option value="20px">20</option><option value="24px">24</option><option value="28px">28</option><option value="32px">32</option><option value="36px">36</option></select>
+<label class="blog-colour">Text colour <input type="color" data-colour value="#682080"></label><button type="button" data-cmd="undo" title="Undo">↶</button><button type="button" data-cmd="redo" title="Redo">↷</button><button type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+</div><div id="blog-title-edit" class="blog-editable blog-title-edit" contenteditable="true" spellcheck="true"><?= $testimonial['title_html'] ?></div></div>
+<div class="blog-editor-field"><label for="blog-body-edit">Blog text</label>
+<div class="blog-toolbar" data-target="blog-body-edit">
+<button type="button" data-cmd="bold" title="Bold"><b>B</b></button><button type="button" data-cmd="italic" title="Italic"><i>I</i></button><button type="button" data-cmd="underline" title="Underline"><u>U</u></button><button type="button" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+<button type="button" data-cmd="insertUnorderedList" title="Bulleted list">• List</button><button type="button" data-cmd="insertOrderedList" title="Numbered list">1. List</button><button type="button" data-cmd="justifyLeft" title="Align left">⇤</button><button type="button" data-cmd="justifyCenter" title="Centre">↔</button><button type="button" data-cmd="justifyRight" title="Align right">⇥</button>
+<select data-font aria-label="Font family"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option><option value="Montserrat">Montserrat</option></select>
+<select data-size aria-label="Font size"><option value="12px">12</option><option value="14px">14</option><option value="16px" selected>16</option><option value="18px">18</option><option value="20px">20</option><option value="24px">24</option><option value="28px">28</option><option value="32px">32</option></select>
+<label class="blog-colour">Text colour <input type="color" data-colour value="#333333"></label><button type="button" data-cmd="undo" title="Undo">↶</button><button type="button" data-cmd="redo" title="Redo">↷</button><button type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+</div><div id="blog-body-edit" class="blog-editable blog-body-edit" contenteditable="true" spellcheck="true"><?= $testimonial['body_html'] ?></div></div>
+<p class="manager-note">Click in the text and type normally. Select any word or sentence to format it. Undo and redo are available while editing.</p>
+<button class="admin-button" type="submit">Save Blog content</button><span class="manager-note" id="blog-save-status" aria-live="polite"></span>
 </form></section>
-<style>.testimonial-editor-field{margin:18px 0}.testimonial-editor-field>label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.testimonial-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:9px;background:#f5f1f7;border:1px solid var(--line);border-radius:9px 9px 0 0}.testimonial-toolbar button,.testimonial-toolbar select{min-height:32px;border:1px solid #d9d1df;border-radius:5px;background:#fff;padding:5px 9px;color:#35253e;cursor:pointer}.testimonial-toolbar select{max-width:150px}.testimonial-toolbar input{width:36px;height:30px}.testimonial-editable{min-height:76px;padding:14px;border:1px solid var(--line);border-top:0;border-radius:0 0 9px 9px;background:#fff;line-height:1.6;outline:none}.testimonial-editable:focus{box-shadow:0 0 0 2px #d9c4e4}.testimonial-body-edit{min-height:150px}</style>
-<script>(()=>{const form=document.getElementById('testimonial-editor-form');if(!form)return;document.querySelectorAll('.testimonial-toolbar').forEach(bar=>{const editor=document.getElementById(bar.dataset.target);bar.addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});bar.addEventListener('click',e=>{const b=e.target.closest('[data-command]'),f=e.target.closest('[data-font]'),z=e.target.closest('[data-size]'),c=e.target.closest('[data-colour]');editor.focus();if(b)document.execCommand(b.dataset.command,false,null);if(f)document.execCommand('fontName',false,f.value);if(z)document.execCommand('fontSize',false,z.value);if(c)document.execCommand('foreColor',false,c.value)});});form.addEventListener('submit',()=>{document.getElementById('testimonial-title-html').value=document.getElementById('testimonial-title-edit').innerHTML;document.getElementById('testimonial-body-html').value=document.getElementById('testimonial-body-edit').innerHTML;});})();</script>
+<style>
+.blog-editor-field{margin:18px 0}.blog-editor-field>label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.blog-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:9px;background:#f5f1f7;border:1px solid var(--line);border-radius:9px 9px 0 0}.blog-toolbar button,.blog-toolbar select{min-height:34px;border:1px solid #d9d1df;border-radius:5px;background:#fff;padding:5px 9px;color:#35253e;cursor:pointer}.blog-toolbar button:hover,.blog-toolbar button.is-active{background:#e9dcef}.blog-toolbar select{max-width:150px}.blog-colour{display:flex;align-items:center;gap:5px;font-size:11px}.blog-colour input{width:36px;height:30px;padding:2px;border:1px solid #d9d1df;border-radius:5px}.blog-editable{min-height:76px;padding:15px;border:1px solid var(--line);border-top:0;border-radius:0 0 9px 9px;background:#fff;line-height:1.65;outline:none;overflow-wrap:anywhere}.blog-editable:focus{box-shadow:0 0 0 2px #d9c4e4}.blog-body-edit{min-height:230px}.blog-editable:empty:before{content:'Start writing here…';color:#999;pointer-events:none}
+</style>
+<script>
+(()=> {
+ const form=document.getElementById('blog-editor-form'); if(!form)return;
+ let savedRange=null,activeEditor=null;
+ const remember=editor=>{activeEditor=editor;const selection=window.getSelection();if(selection&&selection.rangeCount&&editor.contains(selection.anchorNode)){savedRange=selection.getRangeAt(0).cloneRange();}};
+ const restore=editor=>{editor.focus();const selection=window.getSelection();if(savedRange&&editor.contains(savedRange.commonAncestorContainer)){selection.removeAllRanges();selection.addRange(savedRange);}};
+ document.querySelectorAll('.blog-editable').forEach(editor=>{
+  editor.addEventListener('keyup',()=>remember(editor));editor.addEventListener('mouseup',()=>remember(editor));editor.addEventListener('input',()=>remember(editor));editor.addEventListener('focus',()=>remember(editor));
+ });
+ document.querySelectorAll('.blog-toolbar').forEach(toolbar=>{
+  const editor=document.getElementById(toolbar.dataset.target);
+  toolbar.addEventListener('pointerdown',event=>{if(event.target.closest('button'))event.preventDefault();remember(editor);});
+  toolbar.addEventListener('click',event=>{
+   const button=event.target.closest('[data-cmd]'),font=event.target.closest('[data-font]'),size=event.target.closest('[data-size]'),colour=event.target.closest('[data-colour]');
+   if(!button&&!font&&!size&&!colour)return;
+   restore(editor);
+   if(button)document.execCommand(button.dataset.cmd,false,null);
+   if(font)document.execCommand('fontName',false,font.value);
+   if(size){document.execCommand('fontSize',false,'7');editor.querySelectorAll('font[size="7"]').forEach(node=>{node.removeAttribute('size');node.style.fontSize=size.value;});}
+   if(colour)document.execCommand('foreColor',false,colour.value);
+   remember(editor);
+  });
+ });
+ form.addEventListener('submit',()=>{
+  document.getElementById('blog-title-html').value=document.getElementById('blog-title-edit').innerHTML;
+  document.getElementById('blog-body-html').value=document.getElementById('blog-body-edit').innerHTML;
+  document.getElementById('blog-save-status').textContent='Saving…';
+ });
+})();
+</script>
 <section class="admin-panel section-anchor" id="homepage-images">
 <div class="admin-section-title"><div><h2>Homepage & website section images</h2><p>Choose a homepage section, preview its current image, then upload a replacement or paste an image URL.</p></div></div>
 <div class="manager-top"><label for="homepage-section-select"><strong>Sections</strong></label><form method="get" id="homepage-section-form"><select id="homepage-section-select" name="section" onchange="this.form.submit()"><?php foreach($slots as $slot): ?><option value="<?=admin_h($slot[0])?>" <?=$activeKey===$slot[0]?'selected':''?>><?=admin_h($slot[1])?></option><?php endforeach; ?></select><input type="hidden" name="destination_id" value="<?=$selected?>"></form></div>
