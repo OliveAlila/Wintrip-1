@@ -612,3 +612,26 @@ html{scroll-padding-top:112px}
 .destination-image{background:#e9e3ef!important}
 .destination-image img{object-fit:contain!important;object-position:center!important;background:#e9e3ef}
 .destination-card{min-width:0}
+
+
+/* FULL-FRAME IMAGE DISPLAY: preserve the complete photograph in every managed image slot. */
+.travelix-hero .hero-slide{
+ background-size:cover,contain!important;
+ background-repeat:no-repeat!important;
+ background-position:center center!important;
+ background-color:#211a32!important;
+}
+.intro-pictures img,
+.destination-image img,
+.tour-image img,
+.journal-card img,
+.home-gallery-grid a img,
+.destination-photo img,
+.destination-hero-slide img{
+ object-fit:contain!important;
+ object-position:center center!important;
+ background-color:#211a32;
+}
+.destination-image img{background-color:#e9e3ef!important}
+.journal-card img,.home-gallery-grid a img,.tour-image img{background-color:#211a32!important}
+.intro-pictures img{background-color:#f1eef6!important}
