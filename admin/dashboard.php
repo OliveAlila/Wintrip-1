@@ -5,7 +5,7 @@ try {
  $photos=$pdo->query('SELECT * FROM gallery_images ORDER BY sort_order,id')->fetchAll();
  $destinations=$pdo->query('SELECT id,name,slug,image_url FROM destinations ORDER BY sort_order,name')->fetchAll();
  $siteImages=$pdo->query('SELECT * FROM site_images ORDER BY label')->fetchAll();
- $blog=$pdo->query('SELECT title_html,body_html FROM blogs WHERE id=1')->fetch() ?: ['title_html'=>'It\'s not just where<br>you go. It\'s <em>how you feel.</em>','body_html'=>'Every great journey begins with a little curiosity. Tell us what inspires you, and let\'s make your next escape one to remember.'];
+ $blog=$pdo->query('SELECT title_html,body_html FROM blog_content WHERE id=1')->fetch() ?: ['title_html'=>'It\'s not just where<br>you go. It\'s <em>how you feel.</em>','body_html'=>'Every great journey begins with a little curiosity. Tell us what inspires you, and let\'s make your next escape one to remember.'];
  $selected=(int)($_GET['destination_id']??($destinations[0]['id']??0));
  $chosen=null; foreach($destinations as $d){if((int)$d['id']===$selected){$chosen=$d;break;}}
  $gallery=[]; if($chosen){$q=$pdo->prepare('SELECT * FROM destination_images WHERE destination_id=? ORDER BY sort_order,id');$q->execute([$selected]);$gallery=$q->fetchAll();}
@@ -41,7 +41,7 @@ $activeSlot=null; foreach($slots as $slot){if($slot[0]===$activeKey){$activeSlot
 <select data-font aria-label="Font family"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option><option value="Montserrat">Montserrat</option></select>
 <select data-size aria-label="Font size"><option value="12px">12</option><option value="14px">14</option><option value="16px" selected>16</option><option value="18px">18</option><option value="20px">20</option><option value="24px">24</option><option value="28px">28</option><option value="32px">32</option><option value="36px">36</option></select>
 <label class="blog-colour">Text colour <input type="color" data-colour value="#682080"></label><button type="button" data-cmd="undo" title="Undo">↶</button><button type="button" data-cmd="redo" title="Redo">↷</button><button type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
-</div><div id="blog-title-edit" class="blog-editable blog-title-edit" contenteditable="true" spellcheck="true"><?= $testimonial['title_html'] ?></div></div>
+</div><div id="blog-title-edit" class="blog-editable blog-title-edit" contenteditable="true" spellcheck="true"><?= $blog['title_html'] ?></div></div>
 <div class="blog-editor-field"><label for="blog-body-edit">Blog text</label>
 <div class="blog-toolbar" data-target="blog-body-edit">
 <button type="button" data-cmd="bold" title="Bold"><b>B</b></button><button type="button" data-cmd="italic" title="Italic"><i>I</i></button><button type="button" data-cmd="underline" title="Underline"><u>U</u></button><button type="button" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
@@ -49,7 +49,7 @@ $activeSlot=null; foreach($slots as $slot){if($slot[0]===$activeKey){$activeSlot
 <select data-font aria-label="Font family"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option><option value="Montserrat">Montserrat</option></select>
 <select data-size aria-label="Font size"><option value="12px">12</option><option value="14px">14</option><option value="16px" selected>16</option><option value="18px">18</option><option value="20px">20</option><option value="24px">24</option><option value="28px">28</option><option value="32px">32</option></select>
 <label class="blog-colour">Text colour <input type="color" data-colour value="#333333"></label><button type="button" data-cmd="undo" title="Undo">↶</button><button type="button" data-cmd="redo" title="Redo">↷</button><button type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
-</div><div id="blog-body-edit" class="blog-editable blog-body-edit" contenteditable="true" spellcheck="true"><?= $testimonial['body_html'] ?></div></div>
+</div><div id="blog-body-edit" class="blog-editable blog-body-edit" contenteditable="true" spellcheck="true"><?= $blog['body_html'] ?></div></div>
 <p class="manager-note">Click in the text and type normally. Select any word or sentence to format it. Undo and redo are available while editing.</p>
 <button class="admin-button" type="submit">Save Blog content</button><span class="manager-note" id="blog-save-status" aria-live="polite"></span>
 </form></section>
