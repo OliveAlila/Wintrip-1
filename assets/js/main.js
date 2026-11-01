@@ -155,3 +155,7 @@ renderDestinationDetail();;
  window.addEventListener('pageshow',update);
  update();
 })();
+
+
+// Load the testimonial title and text saved in the admin dashboard.
+(async()=>{const title=document.getElementById('homepage-testimonial-title'),body=document.getElementById('homepage-testimonial-text');if(!title||!body)return;try{const response=await fetch('api/testimonials.php',{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)throw new Error('Testimonials API unavailable');const data=await response.json();if(data.title_html)title.innerHTML=data.title_html;if(data.body_html)body.innerHTML=data.body_html;}catch(error){console.info('Showing default testimonial content.',error.message);}})();
