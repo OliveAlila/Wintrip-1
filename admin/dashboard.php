@@ -6,6 +6,7 @@ try {
  $destinations=$pdo->query('SELECT id,name,slug,image_url FROM destinations ORDER BY sort_order,name')->fetchAll();
  $siteImages=$pdo->query('SELECT * FROM site_images ORDER BY label')->fetchAll();
  $blog=$pdo->query('SELECT title_html,body_html FROM blog_content WHERE id=1')->fetch() ?: ['title_html'=>'It\'s not just where<br>you go. It\'s <em>how you feel.</em>','body_html'=>'Every great journey begins with a little curiosity. Tell us what inspires you, and let\'s make your next escape one to remember.'];
+ $testimonials=$pdo->query('SELECT id,reviewer_name,review_text,trip_label FROM blog_testimonials ORDER BY sort_order,id')->fetchAll();
  $selected=(int)($_GET['destination_id']??($destinations[0]['id']??0));
  $chosen=null; foreach($destinations as $d){if((int)$d['id']===$selected){$chosen=$d;break;}}
  $gallery=[]; if($chosen){$q=$pdo->prepare('SELECT * FROM destination_images WHERE destination_id=? ORDER BY sort_order,id');$q->execute([$selected]);$gallery=$q->fetchAll();}
@@ -88,6 +89,16 @@ $activeSlot=null; foreach($slots as $slot){if($slot[0]===$activeKey){$activeSlot
   document.getElementById('blog-save-status').textContent='Saving…';
  });
 })();
+</script>
+<section class="admin-panel section-anchor" id="testimonial-editor">
+<div class="admin-section-title"><div><h2>Blog testimonials</h2><p>Manage customer reviews rotating in the existing Blog text area. Maximum 5 testimonials.</p></div><span class="image-count"><?=count($testimonials)?> / 5</span></div>
+<form method="post" action="save-testimonials.php" id="testimonial-admin-form"><input type="hidden" name="csrf" value="<?=admin_h(admin_csrf())?>">
+<div id="testimonial-admin-list">
+<?php foreach($testimonials as $i=>$item): ?><article class="manager-card testimonial-admin-row"><h3>Testimonial <?=($i+1)?></h3><input type="hidden" name="id[]" value="<?=(int)$item['id']?>"><label>Customer name<input name="reviewer_name[]" maxlength="100" required value="<?=admin_h($item['reviewer_name'])?>"></label><label>Testimonial text<textarea name="review_text[]" rows="3" maxlength="1200" required><?=admin_h($item['review_text'])?></textarea></label><label>Package / destination<input name="trip_label[]" maxlength="160" value="<?=admin_h($item['trip_label'])?>"></label><button type="button" class="testimonial-remove">Remove</button></article><?php endforeach; ?>
+</div><div class="testimonial-admin-actions"><button type="button" class="admin-button" id="add-testimonial" <?=count($testimonials)>=5?'disabled':''?>>＋ Add testimonial</button><button type="submit" class="admin-button">Save testimonials</button></div><p class="manager-note">The website rotates through saved testimonials automatically. Remove a row and save to delete it.</p></form></section>
+<style>.testimonial-admin-row{margin:12px 0;max-width:850px}.testimonial-admin-row textarea{width:100%;min-width:0;border:1px solid var(--line);border-radius:7px;padding:9px;font:12px/1.5 inherit;resize:vertical}.testimonial-admin-row label{display:grid;gap:5px;font-size:11px;font-weight:700;margin:9px 0}.testimonial-admin-row input{width:100%;border:1px solid var(--line);border-radius:7px;padding:9px;font-size:12px}.testimonial-admin-row .testimonial-remove{background:#a33b52;margin-top:5px}.testimonial-admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}</style>
+<script>
+(()=>{const list=document.getElementById('testimonial-admin-list'),add=document.getElementById('add-testimonial');if(!list||!add)return;const update=()=>{const rows=list.querySelectorAll('.testimonial-admin-row');add.disabled=rows.length>=5;rows.forEach((row,i)=>row.querySelector('h3').textContent='Testimonial '+(i+1));};add.addEventListener('click',()=>{if(list.querySelectorAll('.testimonial-admin-row').length>=5)return;const row=document.createElement('article');row.className='manager-card testimonial-admin-row';row.innerHTML='<h3></h3><input type="hidden" name="id[]" value="0"><label>Customer name<input name="reviewer_name[]" maxlength="100" required></label><label>Testimonial text<textarea name="review_text[]" rows="3" maxlength="1200" required></textarea></label><label>Package / destination<input name="trip_label[]" maxlength="160"></label><button type="button" class="testimonial-remove">Remove</button>';list.appendChild(row);update();});list.addEventListener('click',event=>{if(event.target.closest('.testimonial-remove')){event.target.closest('.testimonial-admin-row').remove();update();}});update();})();
 </script>
 <section class="admin-panel section-anchor" id="homepage-images">
 <div class="admin-section-title"><div><h2>Homepage & website section images</h2><p>Choose a homepage section, preview its current image, then upload a replacement or paste an image URL.</p></div></div>
