@@ -157,5 +157,19 @@ renderDestinationDetail();;
 })();
 
 
-// Load the Blog title and text saved in the admin dashboard.
-(async()=>{const title=document.getElementById('homepage-blog-title'),body=document.getElementById('homepage-blog-text');if(!title||!body)return;try{const response=await fetch('api/blog.php',{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)throw new Error('Blog API unavailable');const data=await response.json();if(data.title_html)title.innerHTML=data.title_html;if(data.body_html)body.innerHTML=data.body_html;}catch(error){console.info('Showing default Blog content.',error.message);}})();
+// Load the saved Blog heading and rotate testimonials in the existing Blog text column.
+(async()=>{
+ const title=document.getElementById('homepage-blog-title'),body=document.getElementById('homepage-blog-text');
+ if(!title||!body)return;
+ try{const r=await fetch('api/blog.php',{headers:{Accept:'application/json'},cache:'no-store'});if(r.ok){const data=await r.json();if(data.title_html)title.innerHTML=data.title_html;}}catch(error){console.info('Showing default Blog heading.',error.message);}
+ const slider=document.getElementById('blog-testimonial-slider'),name=document.getElementById('blog-testimonial-name'),trip=document.getElementById('blog-testimonial-trip'),dots=document.getElementById('blog-testimonial-dots');
+ if(!slider||!name||!trip||!dots)return;
+ let items=[{text:'Anytime any day the best services with an amazing team. Never disappoints',name:'Lydia Kwamboka',trip:'Honeymoon Package — Dubai'},{text:'A good experience I had by booking with you, and the pocket friendly prices, good customer service you are like a family. Thank you Wintrip safaris',name:'Martin Mato',trip:'Game Drive — Maasai Mara'}];
+ try{const r=await fetch('api/testimonials.php',{headers:{Accept:'application/json'},cache:'no-store'});if(r.ok){const data=await r.json();if(Array.isArray(data.testimonials)&&data.testimonials.length)items=data.testimonials;}}catch(error){console.info('Using default testimonials.',error.message);}
+ let current=0,timer=null;
+ const paint=()=>{dots.innerHTML=items.map((_,i)=>'<span'+(i===current?' class="active"':'')+'></span>').join('');};
+ const show=next=>{current=(next+items.length)%items.length;slider.classList.add('is-changing');window.setTimeout(()=>{const item=items[current];body.textContent=item.text;name.textContent=item.name;trip.textContent=item.trip||'';paint();slider.classList.remove('is-changing');},220);};
+ const restart=()=>{if(timer)window.clearInterval(timer);if(items.length>1)timer=window.setInterval(()=>show(current+1),6500);};
+ paint();show(0);restart();
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){if(timer)window.clearInterval(timer);}else restart();});
+})();
