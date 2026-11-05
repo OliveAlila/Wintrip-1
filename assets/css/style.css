@@ -633,11 +633,12 @@ html{scroll-padding-top:112px}
 .intro-pictures img{background-color:#f1eef6!important}
 
 /* Single-line testimonial rotation inside the existing Blog text column. */
-.blog-testimonial-slider{min-height:118px;transition:opacity .22s ease,transform .22s ease}
-.blog-testimonial-slider.is-changing{opacity:0;transform:translateY(8px)}
+.blog-testimonial-slider{min-height:118px;overflow:hidden;transition:opacity .26s ease,transform .26s ease}
+.blog-testimonial-slider.is-changing{opacity:0;transform:translateX(-22px)}
+.blog-testimonial-slider.is-entering{opacity:0;transform:translateX(22px)}
 .blog-testimonial-slider blockquote{margin:0 0 13px;color:#706b80;line-height:1.9;font-size:13px}
 .blog-testimonial-slider .quote-author{display:block;margin-top:8px}
 .blog-testimonial-slider .quote-trip{display:block;margin-top:5px;color:#81788e;font-size:11px;font-weight:600}
 .quote-dots span{transition:background .2s ease,transform .2s ease}
 .quote-dots span.active{background:var(--purple);transform:scale(1.25)}
-@media(prefers-reduced-motion:reduce){.blog-testimonial-slider,.quote-dots span{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.blog-testimonial-slider,.quote-dots span{transition:none!important}.blog-testimonial-slider.is-changing,.blog-testimonial-slider.is-entering{transform:none!important;opacity:1!important}}
