@@ -2,6 +2,8 @@
 require __DIR__.'/bootstrap.php'; admin_require_login();
 try {
  $pdo=admin_db();
+ require_once dirname(__DIR__).'/api/testimonials-store.php';
+ wintrip_ensure_testimonials($pdo);
  $photos=$pdo->query('SELECT * FROM gallery_images ORDER BY sort_order,id')->fetchAll();
  $destinations=$pdo->query('SELECT id,name,slug,image_url FROM destinations ORDER BY sort_order,name')->fetchAll();
  $siteImages=$pdo->query('SELECT * FROM site_images ORDER BY label')->fetchAll();
