@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require __DIR__.'/bootstrap.php';admin_require_login();
+require_once dirname(__DIR__).'/api/testimonials-store.php';
 if($_SERVER['REQUEST_METHOD']!=='POST'){header('Location: dashboard.php#testimonial-editor');exit;}
 try{
  admin_verify_csrf();
@@ -9,7 +10,7 @@ try{
  $count=count($names);
  if($count>5)throw new RuntimeException('You can save a maximum of 5 testimonials.');
  if(count($reviews)!==$count||count($trips)!==$count||count($ids)!==$count)throw new RuntimeException('Please complete each testimonial row.');
- $pdo=admin_db();$pdo->beginTransaction();$pdo->exec('DELETE FROM blog_testimonials');
+ $pdo=admin_db();wintrip_ensure_testimonials($pdo);$pdo->beginTransaction();$pdo->exec('DELETE FROM blog_testimonials');
  $stmt=$pdo->prepare('INSERT INTO blog_testimonials (reviewer_name,review_text,trip_label,sort_order) VALUES (?,?,?,?)');
  for($i=0;$i<$count;$i++){
   $name=trim((string)$names[$i]);$review=trim((string)$reviews[$i]);$trip=trim((string)$trips[$i]);
