@@ -642,3 +642,12 @@ html{scroll-padding-top:112px}
 .quote-dots span{transition:background .2s ease,transform .2s ease}
 .quote-dots span.active{background:var(--purple);transform:scale(1.25)}
 @media(prefers-reduced-motion:reduce){.blog-testimonial-slider,.quote-dots span{transition:none!important}.blog-testimonial-slider.is-changing,.blog-testimonial-slider.is-entering{transform:none!important;opacity:1!important}}
+
+/* Trip search: one desktop row, with responsive wrapping on smaller screens. */
+.quick-search .search-form,.travelix-search .search-form{grid-template-columns:minmax(150px,1.25fr) minmax(145px,1.05fr) minmax(135px,1fr) minmax(135px,1fr) minmax(115px,.85fr) minmax(145px,1.05fr)!important;align-items:end!important;gap:12px!important}
+.quick-search .search-form label,.travelix-search .search-form label{min-width:0!important;padding:0!important}
+.quick-search .search-form select,.quick-search .search-form input,.travelix-search .search-form select,.travelix-search .search-form input{box-sizing:border-box!important;min-width:0!important;width:100%!important;height:48px!important;padding:10px 11px!important;font-size:12px!important}
+.quick-search .search-submit,.travelix-search .search-submit{width:100%!important;height:48px!important;white-space:nowrap!important;padding:0 12px!important}
+@media(max-width:1120px){.quick-search .search-form,.travelix-search .search-form{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:820px){.quick-search .search-form,.travelix-search .search-form{grid-template-columns:repeat(2,minmax(0,1fr))!important}.quick-search .search-form label:first-child,.travelix-search .search-form label:first-child{grid-column:1/-1}.quick-search .search-submit,.travelix-search .search-submit{grid-column:1/-1!important}}
+@media(max-width:560px){.quick-search .search-form,.travelix-search .search-form{grid-template-columns:minmax(0,1fr)!important}.quick-search .search-form label:first-child,.travelix-search .search-form label:first-child{grid-column:auto}.quick-search .search-submit,.travelix-search .search-submit{grid-column:auto!important}}
