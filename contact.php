@@ -31,4 +31,4 @@
     </section>
 </main>
 <?php include __DIR__.'/includes/site-footer.php'; ?>
-<script src="assets/js/main.js?v=15" defer></script></body></html>
+<script src="assets/js/main.js?v=16" defer></script></body></html>
