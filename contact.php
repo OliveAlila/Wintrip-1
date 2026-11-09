@@ -1,0 +1,34 @@
+<?php $activePage='contact'; include __DIR__.'/includes/site-header.php'; ?>
+<main class="inner-page">
+<section class="inner-page-banner" style="--page-image:url('assets/images/gallery/wintrip-15.webp')"><div class="inner-page-banner-content"><p class="eyebrow light">WE'RE HERE TO HELP</p><h1>Let's talk about your next journey.</h1><p>Reach our team or send an enquiry and we will help you plan the details.</p></div></section><section class="contact-section" id="contact"><div class="contact-intro"><p class="eyebrow light">YOUR JOURNEY STARTS HERE</p><h2>Where will your<br><em>story take you?</em></h2><p>Tell us a little about your dream trip. Your enquiry is submitted securely to Wintrip Safaris. If the service is unavailable, your email app will open with the enquiry details.</p><div class="contact-facts">
+<a href="tel:+254721661734">Bookings &amp; reservations: +254 721 661 734</a>
+<a href="tel:+254790116711">WhatsApp / Phone: +254 790 116 711</a>
+<a href="https://api.whatsapp.com/send/?phone=254790116711&text&type=phone_number&app_absent=0" target="_blank" rel="noopener">Chat with Wintrip on WhatsApp ↗</a>
+<a href="mailto:reservations@wintripsafaris.com">reservations@wintripsafaris.com</a>
+<a href="mailto:sales@wintripsafaris.com">sales@wintripsafaris.com</a>
+<a href="mailto:wintripsafarishelp@gmail.com">wintripsafarishelp@gmail.com</a>
+<span>P.O. Box 7845 - 00200, Wintrip Safaris Limited, Upper Kitisuru, Kirawa Road, Nairobi, Kenya</span>
+</div></div><form class="contact-form" id="contact-form"><div class="form-row"><label>Your name<input name="name" required placeholder="Full name"></label><label>Email address<input type="email" name="email" required placeholder="you@example.com"></label></div><div class="form-row"><label>Destination<select name="destination" required><option value="">Choose destination</option><option>Maasai Mara</option><option>Amboseli</option><option>Diani Beach</option><option>Lamu</option><option>Zanzibar</option><option>Cape Town</option><option>Dubai</option><option>Not sure yet</option></select></label><label>Travel date<input type="date" name="date"></label></div><label>Tell us about your trip<textarea name="message" rows="4" required placeholder="Who is travelling, and what would you love to experience?"></textarea></label><button class="gradient-btn" type="submit">PREPARE ENQUIRY <b>→</b></button><p class="form-status" id="form-status" aria-live="polite">Your enquiry will be sent to our team. If the service is unavailable, you can send it by email instead.</p></form></section><section class="newsletter-section" id="newsletter">
+      <div class="newsletter-copy">
+        <p class="eyebrow">A LITTLE INSPIRATION IN YOUR INBOX</p>
+        <h2>Journeys made around <em>you.</em></h2>
+        <p>Travel ideas, destination inspiration and updates from Wintrip Safaris.</p>
+      </div>
+      <div class="newsletter-card">
+        <h2>Subscribe to Wintrip</h2>
+        <form class="newsletter-form" id="newsletter-form">
+          <label class="sr-only" for="newsletter-email">Email address</label>
+          <input id="newsletter-email" name="email" type="email" autocomplete="email" required maxlength="190" placeholder="Enter your email">
+          <button type="submit" aria-label="Subscribe to Wintrip">SUBSCRIBE <b>→</b></button>
+          <p id="newsletter-status" aria-live="polite">You can unsubscribe from updates at any time.</p>
+        </form>
+        <div class="newsletter-social-row" aria-label="Wintrip social media">
+          <a href="https://www.facebook.com/wintripsafaris" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.2V13H10v8z"/></svg></a>
+          <a href="https://www.instagram.com/wintripsafaris" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 2.5h9.6a4.7 4.7 0 0 1 4.7 4.7v9.6a4.7 4.7 0 0 1-4.7 4.7H7.2a4.7 4.7 0 0 1-4.7-4.7V7.2a4.7 4.7 0 0 1 4.7-4.7zm0 2A2.7 2.7 0 0 0 4.5 7.2v9.6a2.7 2.7 0 0 0 2.7 2.7h9.6a2.7 2.7 0 0 0 2.7-2.7V7.2a2.7 2.7 0 0 0-2.7-2.7zm4.8 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm4.8-3.2a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2z"/></svg></a>
+          <a href="https://www.instagram.com/wintripsafaris/reels/" target="_blank" rel="noopener" aria-label="Instagram Reels" title="Instagram Reels"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2h11A2.5 2.5 0 0 1 20 4.5v15a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 19.5zm2.5-.5a.5.5 0 0 0-.5.5v2h12v-2a.5.5 0 0 0-.5-.5zm-.5 4.5v11a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-11zm4.2 2.1 5 3.4-5 3.4zM8 2l3 4h2l-3-4zm6 0 3 4h2l-3-4z"/></svg></a>
+        </div>
+      </div>
+    </section>
+</main>
+<?php include __DIR__.'/includes/site-footer.php'; ?>
+<script src="assets/js/main.js?v=15" defer></script></body></html>
